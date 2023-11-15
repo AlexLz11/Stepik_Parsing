@@ -1,108 +1,33 @@
-# import requests
-# from bs4 import BeautifulSoup
+import requests
 
-# # Отправляем GET-запрос на веб-страницу
-# url = 'http://parsinger.ru/2.1/DOM/index2.html'
-# response = requests.get(url)
-# response.encoding = 'utf-8'
+def check_ip(ip_port):
+    ''' Проверка ip и порта proxy'''
+    ip, *port = ip_port.split(':')
+    is_ip = len(ip.split('.')) == 4 and all(map(lambda x: x.isdigit() and int(x) < 256, ip.split('.')))
+    is_port = len(port) == 1 and port[0].isdigit() and 0 < int(port[0]) < 65536
+    return all([is_ip, is_port])
 
-# # Проверяем статус-код ответа
-# if response.status_code == 200:
-    
-#     # Инициализируем объект BeautifulSoup для парсинга HTML
-#     soup = BeautifulSoup(response.text, 'html.parser')
-
-#     # Ищем элемент с ID "text777"
-#     target_element = soup.find(id="text777")
-
-#     # Извлекаем текст из найденного элемента
-#     if target_element:
-#         extracted_text = target_element.text
-#         print(f"Извлеченный текст: {extracted_text}")  # Вывод на экран
-#     else:
-#         print("Элемент с ID 'text777' не найден.")
-# else:
-#     print(f"Не удалось получить доступ к странице, статус-код: {response.status_code}")
-
-# response = requests.get(url='http://httpbin.org/')
-# print(type(response))
-
-# import requests
-
-# headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml', 'Connection': 'keep-alive'}
-# # URL для примеров
-# url = "https://httpbin.org/user-agent"
-
-# # Выполняем GET-запрос
-# response = requests.get(url, headers=headers)
-
-# # status_code: HTTP-код статуса ответа.
-# print("HTTP-код статуса ответа:", response.status_code)
-
-# # text: Текстовое представление содержимого ответа.
-# print("Текстовое содержимое ответа:", response.text)
-
-# # content: Содержимое ответа в виде байтов.
-# print("Содержимое ответа в виде байтов:", response.content)
-
-# # json: Метод для десериализации JSON-ответа.
-# json_response = response.json()
-# print("Десериализованный JSON-ответ:", json_response)
-
-# # headers: Заголовки HTTP, возвращаемые сервером.
-# print("Заголовки HTTP:", response.headers)
-
-# # url: Исходный URL-адрес, на который был выполнен запрос.
-# print("Исходный URL-адрес запроса:", response.url)
-
-# # encoding: Кодировка ответа.
-# print("Кодировка ответа:", response.encoding)
-
-# # elapsed: Время, затраченное на выполнение запроса.
-# print("Время выполнения запроса:", response.elapsed)
-
-# # cookies: Куки, возвращаемые сервером.
-# print("Куки, возвращаемые сервером:", response.cookies)
-
-# # history: Список объектов Response, представляющих историю перенаправлений.
-# print("История перенаправлений:", response.history)
-
-# # ok: Логический атрибут, указывающий, был ли запрос успешным (коды 2xx).
-# print("Запрос успешен (коды 2xx):", response.ok)
-
-# # reason: Сообщение статуса HTTP (например, "OK", "Not Found").
-# print("Сообщение статуса HTTP:", response.reason)
-
-# import requests
-# from random import choice
-
-# url = 'http://httpbin.org/user-agent'
-
-# with open('user_agent.txt') as file:
-#     lines = file.read().split('\n')
-
-# for line in lines:
-#     user_agent = {'user-agent': choice(lines)}
-#     response = requests.get(url=url, headers=user_agent)
-#     print(response.text)
-
-# import requests
-# import time
-# from requests.exceptions import Timeout, ProxyError
-
-# url = 'http://httpbin.org/get'
-
-# proxies = {
-#     'http': 'http://200.12.55.90:80',
-#     'https': 'http://200.12.55.90:80'
-# }
-# start = time.perf_counter()
-# try:
-#     requests.get(url=url, proxies=proxies)
-# except (Timeout, ProxyError) as _ex:
-#     print(_ex, time.perf_counter() - start)
-
-from fake_useragent import UserAgent
-
-ua = UserAgent()
-print(type(ua))
+url = 'http://httpbin.org/ip'
+proxy_list = 'Stepik_Parsing/proxy_list.txt'
+verified_proxy_list = 'verified_proxy.txt'
+vpl = []
+with open(proxy_list) as file:
+    pl = file.read().split('\n')
+for ip in pl:
+    if ip in vpl or not check_ip(ip):
+        continue
+    try:
+        proxy = {
+                'http': f'http://{ip}',
+                'https': f'https://{ip}'
+                }
+        resp = requests.get(url, proxies=proxy)
+        print(resp.json(), 'Success connection')
+        vpl.append(ip)
+    except Exception as _ex:
+        print(ip, '--Not work')
+        continue
+if vpl:
+    with open(verified_proxy_list, 'w') as file:
+        file.write('\n'.join(vpl))
+        print(f'Create file {verified_proxy_list}')
