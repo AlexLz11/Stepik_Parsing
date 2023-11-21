@@ -95,14 +95,29 @@
 
 # *** 3.3.6 Первая и последняя доступная страница
 
+# import requests
+
+# pages = []
+# for i in range(1, 101):
+#     url = f'https://parsinger.ru/3.3/4/{i}.html'
+#     resp = requests.get(url)
+#     if resp.status_code == 200:
+#         pages.append(i)
+# print(f"Первая доступная страница: {pages[0]}.html")
+# print(f"Последняя доступная страница: {pages[-1]}.html")
+
+# import requests
+
+# response = requests.get(url='http://httpbin.org/image/jpeg')
+# with open('image.jpeg', 'wb') as file:
+#     file.write(response.content)
+
+# *** 3.4.3 Получение и вывод HTML-кода веб-страницы
+
 import requests
 
-pages = []
-for i in range(1, 101):
-    url = f'https://parsinger.ru/3.3/4/{i}.html'
-    resp = requests.get(url)
-    if resp.status_code == 200:
-        pages.append(i)
-print(f"Первая доступная страница: {pages[0]}.html")
-print(f"Последняя доступная страница: {pages[-1]}.html")
-    
+url = 'https://parsinger.ru/3.4/2/index.html'
+resp = requests.get(url)
+resp.encoding = 'utf-8'
+print(resp.encoding)
+print(resp.text)
