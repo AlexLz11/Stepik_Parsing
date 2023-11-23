@@ -114,10 +114,32 @@
 
 # *** 3.4.3 Получение и вывод HTML-кода веб-страницы
 
+# import requests
+
+# url = 'https://parsinger.ru/3.4/2/index.html'
+# resp = requests.get(url)
+# resp.encoding = 'utf-8'
+# print(resp.text)
+
+# *** 3.4.4 Поиск секретного кода на картинках
+# import requests
+
+# with requests.Session() as rs:
+#     for i in range(1, 161):
+#         url = f'https://parsinger.ru/img_download/img/ready/{i}.png'
+#         resp = rs.get(url)
+#         if resp.status_code == 200:
+#             with open(f'Stepik_Parsing/imgs/{i}.png', 'wb') as ouf:
+#                 ouf.write(resp.content)
+
+# *** 3.4.5 Получение и анализ данных о погоде
 import requests
 
-url = 'https://parsinger.ru/3.4/2/index.html'
+url = 'https://parsinger.ru/3.4/1/json_weather.json'
 resp = requests.get(url)
-resp.encoding = 'utf-8'
-print(resp.encoding)
-print(resp.text)
+if resp.status_code == 200:
+    data = resp.json()
+    min_tmp_date = min(data, key=lambda x: int(x['Температура воздуха'].strip('°C')))['Дата']
+    print(min_tmp_date) 
+else:
+    print('Bad connect')
