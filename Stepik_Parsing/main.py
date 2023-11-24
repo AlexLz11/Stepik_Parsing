@@ -133,13 +133,36 @@
 #                 ouf.write(resp.content)
 
 # *** 3.4.5 Получение и анализ данных о погоде
+# import requests
+
+# url = 'https://parsinger.ru/3.4/1/json_weather.json'
+# resp = requests.get(url)
+# if resp.status_code == 200:
+#     data = resp.json()
+#     min_tmp_date = min(data, key=lambda x: int(x['Температура воздуха'].strip('°C')))['Дата']
+#     print(min_tmp_date) 
+# else:
+#     print('Bad connect')
+
+# *** 3.4.6 Анализ древовидной переписки из JSON API
 import requests
 
-url = 'https://parsinger.ru/3.4/1/json_weather.json'
+def dc_list(lst):
+    if not lst:
+        return []
+    tmp = lst[:]
+    for dc in lst:
+        tmp += dc_list(dc['comments'])
+    return tmp
+
+url = 'https://parsinger.ru/3.4/3/dialog.json'
 resp = requests.get(url)
+usernames = {}
 if resp.status_code == 200:
     data = resp.json()
-    min_tmp_date = min(data, key=lambda x: int(x['Температура воздуха'].strip('°C')))['Дата']
-    print(min_tmp_date) 
+    for d in dc_list([data]):
+        usernames[d['username']] = usernames.get(d['username'], 0) + 1
+    sorted_usernames = {k: v for k, v in sorted(usernames.items(), key=lambda x: (-x[1], x[0]))}
+    print(sorted_usernames)
 else:
     print('Bad connect')
