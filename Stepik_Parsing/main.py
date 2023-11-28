@@ -145,24 +145,32 @@
 #     print('Bad connect')
 
 # *** 3.4.6 Анализ древовидной переписки из JSON API
+# import requests
+
+# def dc_list(lst):
+#     if not lst:
+#         return []
+#     tmp = lst[:]
+#     for dc in lst:
+#         tmp += dc_list(dc['comments'])
+#     return tmp
+
+# url = 'https://parsinger.ru/3.4/3/dialog.json'
+# resp = requests.get(url)
+# usernames = {}
+# if resp.status_code == 200:
+#     data = resp.json()
+#     for d in dc_list([data]):
+#         usernames[d['username']] = usernames.get(d['username'], 0) + 1
+#     sorted_usernames = {k: v for k, v in sorted(usernames.items(), key=lambda x: (-x[1], x[0]))}
+#     print(sorted_usernames)
+# else:
+#     print('Bad connect')
+
 import requests
 
-def dc_list(lst):
-    if not lst:
-        return []
-    tmp = lst[:]
-    for dc in lst:
-        tmp += dc_list(dc['comments'])
-    return tmp
-
-url = 'https://parsinger.ru/3.4/3/dialog.json'
+url = 'http://httpbin.org/opopo/'
 resp = requests.get(url)
-usernames = {}
-if resp.status_code == 200:
-    data = resp.json()
-    for d in dc_list([data]):
-        usernames[d['username']] = usernames.get(d['username'], 0) + 1
-    sorted_usernames = {k: v for k, v in sorted(usernames.items(), key=lambda x: (-x[1], x[0]))}
-    print(sorted_usernames)
-else:
-    print('Bad connect')
+print(resp.status_code)
+print(bool(resp))
+print(resp.request)
