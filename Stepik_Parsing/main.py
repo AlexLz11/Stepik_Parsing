@@ -174,3 +174,4 @@ resp = requests.get(url)
 print(resp.status_code)
 print(bool(resp))
 print(resp.request)
+# Whoa!!!
