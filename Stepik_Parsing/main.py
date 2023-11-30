@@ -159,4 +159,51 @@
 # html = requests.get(url)
 # html.encoding = 'utf-8'
 # get_html(html.text)git 
-# test1 *** test1
+
+# 4.3.6 Одновременный поиск и извлечение название товара
+# import requests
+# from bs4 import BeautifulSoup
+
+# def get_html(html):
+#     soup = BeautifulSoup(html, 'html.parser')
+
+#     tags = [el.get_text(strip=True) for el in soup.find_all('a', class_='name_item product_name')]
+#     for tag in tags:
+#         print(tag)
+
+# url = 'https://parsinger.ru/4.1/1/index4.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# get_html(html.text)
+
+# 4.3.7 Суммирование цен на странице
+# import requests
+# from bs4 import BeautifulSoup
+
+# def get_html(html):
+#     soup = BeautifulSoup(html, 'html.parser')
+
+#     count = sum(map(lambda x: int(''.join([i for i in x if i.isdigit()])), [pr.text for pr in soup.find_all('p', class_='price product_price')]))
+    
+#     return count
+
+# url = 'https://parsinger.ru/4.1/1/index4.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# print(get_html(html.text))
+
+# 4.3.8 Поиск всех идентификаторов у тегов <li>
+import requests
+from bs4 import BeautifulSoup
+
+def get_html(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
+    tags_li = soup.find_all('li', id=True)
+    for tag in tags_li:
+        print(tag['id'])
+
+url = 'https://parsinger.ru/4.1/1/index4.html'
+html = requests.get(url)
+html.encoding = 'utf-8'
+get_html(html.text)
