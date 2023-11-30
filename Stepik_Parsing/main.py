@@ -158,4 +158,5 @@
 # url = 'https://parsinger.ru/4.1/1/index2.html'
 # html = requests.get(url)
 # html.encoding = 'utf-8'
-# get_html(html.text)
+# get_html(html.text)git 
+# test1 *** test1
