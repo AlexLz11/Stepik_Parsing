@@ -193,17 +193,33 @@
 # print(get_html(html.text))
 
 # 4.3.8 Поиск всех идентификаторов у тегов <li>
+# import requests
+# from bs4 import BeautifulSoup
+
+# def get_html(html):
+#     soup = BeautifulSoup(html, 'html.parser')
+
+#     tags_li = soup.find_all('li', id=True)
+#     for tag in tags_li:
+#         print(tag['id'])
+
+# url = 'https://parsinger.ru/4.1/1/index4.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# get_html(html.text)
+
+# 4.3.9 .previous_sibling и .next_sibling
 import requests
 from bs4 import BeautifulSoup
-
 def get_html(html):
     soup = BeautifulSoup(html, 'html.parser')
 
-    tags_li = soup.find_all('li', id=True)
-    for tag in tags_li:
-        print(tag['id'])
+    sibling = soup.find('p', string='Текст раздела 3').next_sibling
 
-url = 'https://parsinger.ru/4.1/1/index4.html'
+
+    return sibling
+
+url = 'https://parsinger.ru/4.1/1/index6.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
-get_html(html.text)
+print(get_html(html.text))
