@@ -209,17 +209,69 @@
 # get_html(html.text)
 
 # 4.3.9 .previous_sibling и .next_sibling
-import requests
+# import requests
+# from bs4 import BeautifulSoup
+# def get_html(html):
+#     soup = BeautifulSoup(html, 'html.parser')
+
+#     sibling = soup.find('p', string='Текст раздела 3').next_sibling
+
+
+#     return sibling
+
+# url = 'https://parsinger.ru/4.1/1/index6.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# print(get_html(html.text))
+
+# 4.3.10 .previous_sibling и .next_sibling
+# import requests
+# from bs4 import BeautifulSoup
+# def get_html(html):
+#     soup = BeautifulSoup(html, 'html.parser')
+
+#     emails = [elem.next_sibling.strip() for elem in soup.select('.email_field strong')]
+
+#     return emails
+
+# url = 'https://parsinger.ru/4.1/1/index5.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# print(get_html(html.text))
+
+# 4.4.0 Получите HTML разметку из файла index.html
+# from bs4 import BeautifulSoup
+# import lxml
+
+# with open('Stepik_Parsing/index.html', encoding='utf-8') as inf:
+#     soup = BeautifulSoup(inf, 'lxml')
+# print(soup)
+
+# 4.4.1 Извлеките текст из тега
 from bs4 import BeautifulSoup
-def get_html(html):
-    soup = BeautifulSoup(html, 'html.parser')
 
-    sibling = soup.find('p', string='Текст раздела 3').next_sibling
+html_doc = """
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пример карточки товара</title>
+</head>
+<body>
+    <div class="card">
+        <img src="image.jpg" alt="Пример изображения товара">
+        <h2 class="card-title"> iPhone 15 </h2>
+        <p class="card-description">Аппаратной основой Apple iPhone 15 Pro Max стал 3-нанометровый чипсет A17 Pro с 6-ядерным GPU и поддержкой трассировки лучей.</p>
+        <p class="card-price">999 999 руб.</p>
+        <a href="https://example.com/product-link" class="card-link">Подробнее</a>
+    </div>
+</body>
+</html>
+"""
 
+def main ():
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    p_description = soup.find('p', class_='card-description').text
+    print(p_description)
 
-    return sibling
-
-url = 'https://parsinger.ru/4.1/1/index6.html'
-html = requests.get(url)
-html.encoding = 'utf-8'
-print(get_html(html.text))
+main()
