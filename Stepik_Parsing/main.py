@@ -682,13 +682,31 @@
 # print(sum(prices))
 
 # 4.5.6 Открываем сайт
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/html/hdd/4/4_1.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'html.parser')
+# new_pr = int(soup.find(id='price').text.strip(' руб'))
+# old_pr = int(soup.find(id='old_price').text.strip(' руб'))
+# print((old_pr - new_pr) * 100 / old_pr)
+
+# 4.6.1 Извлечение названий товаров с веб-сайта
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/html/hdd/4/4_1.html'
-html = requests.get(url)
-html.encoding = 'utf-8'
-soup = BeautifulSoup(html.text, 'html.parser')
-new_pr = int(soup.find(id='price').text.strip(' руб'))
-old_pr = int(soup.find(id='old_price').text.strip(' руб'))
-print((old_pr - new_pr) * 100 / old_pr)
+url = 'https://parsinger.ru/html/index3_page_1.html'
+html_pg = requests.get(url)
+soup = BeautifulSoup(html_pg.text, 'html.parser')
+ln = 'https://parsinger.ru/html/'
+links = [ln + tag['href'] for tag in soup.select_one('div.pagen').select('a')]
+goods_name = []
+for link in links:
+    html = requests.get(str(link))
+    html.encoding = 'utf-8'
+    soup = BeautifulSoup(html.text, 'html.parser')
+    names = [tag.text for tag in soup.select('a.name_item')]
+    goods_name.append(names)
+print(goods_name)
