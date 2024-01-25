@@ -694,19 +694,32 @@
 # print((old_pr - new_pr) * 100 / old_pr)
 
 # 4.6.1 Извлечение названий товаров с веб-сайта
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/html/index3_page_1.html'
+# html_pg = requests.get(url)
+# soup = BeautifulSoup(html_pg.text, 'html.parser')
+# ln = 'https://parsinger.ru/html/'
+# links = [ln + tag['href'] for tag in soup.select_one('div.pagen').select('a')]
+# goods_name = []
+# for link in links:
+#     html = requests.get(str(link))
+#     html.encoding = 'utf-8'
+#     soup = BeautifulSoup(html.text, 'html.parser')
+#     names = [tag.text for tag in soup.select('a.name_item')]
+#     goods_name.append(names)
+# print(goods_name)
+
+# 4.6.2 Парсинг артикулов товаров с веб-сайта
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/html/index3_page_1.html'
-html_pg = requests.get(url)
-soup = BeautifulSoup(html_pg.text, 'html.parser')
-ln = 'https://parsinger.ru/html/'
-links = [ln + tag['href'] for tag in soup.select_one('div.pagen').select('a')]
-goods_name = []
-for link in links:
-    html = requests.get(str(link))
+def get_article(n):
+    url = f'https://parsinger.ru/html/mouse/3/3_{n}.html'
+    html = requests.get(url)
     html.encoding = 'utf-8'
-    soup = BeautifulSoup(html.text, 'html.parser')
-    names = [tag.text for tag in soup.select('a.name_item')]
-    goods_name.append(names)
-print(goods_name)
+    soup = BeautifulSoup(html.text, 'lxml')
+    article = soup.find('p', class_='article').text.split()[1]
+    return int(article)
+print(sum([get_article(i) for i in range(1, 33)]))
