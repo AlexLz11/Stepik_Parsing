@@ -712,14 +712,78 @@
 # print(goods_name)
 
 # 4.6.2 Парсинг артикулов товаров с веб-сайта
-import requests
-from bs4 import BeautifulSoup
+# import requests
+# from bs4 import BeautifulSoup
 
-def get_article(n):
-    url = f'https://parsinger.ru/html/mouse/3/3_{n}.html'
-    html = requests.get(url)
-    html.encoding = 'utf-8'
-    soup = BeautifulSoup(html.text, 'lxml')
-    article = soup.find('p', class_='article').text.split()[1]
-    return int(article)
-print(sum([get_article(i) for i in range(1, 33)]))
+# def get_article(n):
+#     url = f'https://parsinger.ru/html/mouse/3/3_{n}.html'
+#     html = requests.get(url)
+#     html.encoding = 'utf-8'
+#     soup = BeautifulSoup(html.text, 'lxml')
+#     article = soup.find('p', class_='article').text.split()[1]
+#     return int(article)
+# print(sum([get_article(i) for i in range(1, 33)]))
+
+# 4.6.3 Комплексное извлечение стоимости товаров
+# import requests
+# from bs4 import BeautifulSoup
+
+# def get_soup(url):
+#     html = rs.get(url)
+#     html.encoding = 'utf-8'
+#     return BeautifulSoup(html.text, 'lxml')
+
+# url = 'https://parsinger.ru/html/index1_page_1.html'
+# with requests.Session() as rs:
+#     soup = get_soup(url)
+#     url = 'https://parsinger.ru/html/'
+#     total = 0
+#     for lc in soup.find('div', 'nav_menu').select('a'):
+#         soup = get_soup(url + lc['href'])
+#         for lp in soup.find('div', 'pagen').select('a'):
+#             soup = get_soup(url+lp['href'])
+#             for lg in soup.select('a.name_item'):
+#                 soup = get_soup(url+lg['href'])
+#                 qt = int(soup.find('span', id='in_stock').text.split()[2])
+#                 price = int(soup.find('span', id='price').text.split()[0])
+#                 total += price * qt
+# print(total)
+
+# 4.7 Парсинг AJAX
+# 4.7.1 Пример парсинг bitality.cc
+# import requests
+# headers = {
+#     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36',
+#     'x-requested-with': 'XMLHttpRequest'
+# }
+
+# url = "https://bitality.cc/Home/GetSum?GiveName=Ethereum&GetName=Bitcoin&Sum=4.1895414&Direction=0"
+# response = requests.get(url=url, headers=headers).json()
+# print(response)
+
+# {'giveSum': '4.1895414', 'getSum': '0.25619551'}
+
+import requests
+
+# headers = {'user-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:106.0) Gecko/20100101 Firefox/106.0',
+#            'X-Requested-With': 'XMLHttpRequest', }
+headers = {'user-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:106.0) Gecko/20100101 Firefox/106.0'}
+
+url = 'https://cbr.ru/Queries/AjaxDataSource/112805'
+
+data_dollar = {
+    'DT': '',
+    'val_id': 'R01235',
+    '_': '1667219511852'
+}
+data_euro = {
+    'DT': '',
+    'val_id': 'R01239',
+    '_': '1667219511853'
+}
+response_dollar = requests.get(url=url, headers=headers, params=data_dollar).json()[-1]
+response_euro = requests.get(url=url, headers=headers, params=data_euro).json()[-1]
+
+print(f'Дата: {response_dollar["data"][:10]}')
+print(f'Курс USD: {response_dollar["curs"]} рублей')
+print(f'Курс EUR: {response_euro["curs"]} рублей')
