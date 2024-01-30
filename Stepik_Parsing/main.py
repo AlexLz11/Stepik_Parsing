@@ -792,12 +792,56 @@
 #********************************
 
 # 4.8.1 Агрегация уникальных данных из таблицы
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/1/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# numbers = {float(cell.text) for row in soup.select('tr')[1:] for cell in row.select('td')}
+# print(sum(numbers))
+
+# 4.8.2 Суммирование чисел из первого столбца таблицы
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/2/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# numbers = [float(row.find('td').text) for row in soup.select('tr')[1:]]
+# print(sum(numbers))
+
+# 4.8.3 Агрегация выделенных чисел из таблицы
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/3/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# numbers = [float(cell.text) for cell in soup.select('b')]
+# print(sum(numbers))
+
+# 4.8.4 Суммирование чисел из зелёных ячеек таблицы
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/4/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# numbers = [float(cell.text) for cell in soup.select('td.green')]
+# print(sum(numbers))
+
+# 4.8.5 Агрегация произведений чисел из оранжевых и голубых ячеек таблицы
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/table/1/index.html'
+url = 'https://parsinger.ru/table/5/index.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
-numbers = {float(cell.text) for row in soup.select('tr')[1:] for cell in row.select('td')}
+numbers = [float(row.find('td', 'orange').text) * int(row.select('td')[-1].text) for row in soup.select('tr')[1:]]
 print(sum(numbers))
