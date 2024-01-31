@@ -846,15 +846,37 @@
 # numbers = [float(row.find('td', 'orange').text) * int(row.select('td')[-1].text) for row in soup.select('tr')[1:]]
 # print(sum(numbers))
 
-# 4.8.5 Агрегация данных из столбцов таблицы в словарь
+# 4.8.6 Агрегация данных из столбцов таблицы в словарь
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/5/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# mx = [[float(cell.text) for cell in row.select('td')] for row in soup.select('tr')[1:]]
+# headers = [header.text for header in soup.select('th')]
+# dc = {key: round(sum(vals), 3) for key, vals in zip(headers, zip(*mx))}
+# print(dc)
+
+# 4.8.7 Суммирование чисел, кратных трём, из шести таблиц
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/4.8/7/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# total = sum([int(i.text) for i in soup.select('td') if int(i.text) % 3 == 0])
+# print(total)
+
+# 4.8.8 Извлечение и суммирование данных из таблицы в объединённых ячейках
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/table/5/index.html'
+url = 'https://parsinger.ru/4.8/8/index.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
-mx = [[float(cell.text) for cell in row.select('td')] for row in soup.select('tr')[1:]]
-headers = [header.text for header in soup.select('th')]
-dc = {key: round(sum(vals), 3) for key, vals in zip(headers, zip(*mx))}
-print(dc)
+s = sum([int(i.text) for i in soup.select('[colspan]')[1:]])
+print(s)
