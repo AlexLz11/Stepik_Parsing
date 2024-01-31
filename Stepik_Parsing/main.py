@@ -836,6 +836,17 @@
 # print(sum(numbers))
 
 # 4.8.5 Агрегация произведений чисел из оранжевых и голубых ячеек таблицы
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/table/5/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# numbers = [float(row.find('td', 'orange').text) * int(row.select('td')[-1].text) for row in soup.select('tr')[1:]]
+# print(sum(numbers))
+
+# 4.8.5 Агрегация данных из столбцов таблицы в словарь
 import requests
 from bs4 import BeautifulSoup
 
@@ -843,5 +854,7 @@ url = 'https://parsinger.ru/table/5/index.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
-numbers = [float(row.find('td', 'orange').text) * int(row.select('td')[-1].text) for row in soup.select('tr')[1:]]
-print(sum(numbers))
+mx = [[float(cell.text) for cell in row.select('td')] for row in soup.select('tr')[1:]]
+headers = [header.text for header in soup.select('th')]
+dc = {key: round(sum(vals), 3) for key, vals in zip(headers, zip(*mx))}
+print(dc)
