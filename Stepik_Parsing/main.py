@@ -882,10 +882,28 @@
 # print(s)
 
 import requests
+import json
 from bs4 import BeautifulSoup
+
+def check_car(car):
+    is_year = int(car.select('td')[1].text) >= 2005
+    is_engin = car.select('td')[4].text == 'Бензиновый'
+    is_price = int(car.select('td')[7].text) <= 4000000
+    return all([is_year, is_engin, is_price])
 
 url = 'https://parsinger.ru/4.8/6/index.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
-headers = [i.text for i in soup.select('th')]
+col_nums = [0, 1, 4, 7]
+headers = [header.text for i, header in enumerate(soup.select('th')) if i in col_nums]
+filtered_cars = []
+for row in soup.select('tr')[1:]:
+    if check_car(row):
+        car = {}
+        for i, key in zip(col_nums, headers):
+            car[key] = int(data) if (data := row.select('td')[i].text).isdigit() else data
+        filtered_cars.append(car)
+sorted_cars = sorted(filtered_cars, key=lambda x: x["Стоимость авто"])
+cars_json = json.dumps(sorted_cars, indent=4, ensure_ascii=False)
+print(cars_json)
