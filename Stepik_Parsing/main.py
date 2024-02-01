@@ -871,12 +871,21 @@
 # print(total)
 
 # 4.8.8 Извлечение и суммирование данных из таблицы в объединённых ячейках
+# import requests
+# from bs4 import BeautifulSoup
+
+# url = 'https://parsinger.ru/4.8/8/index.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = BeautifulSoup(html.text, 'lxml')
+# s = sum([int(i.text) for i in soup.select('[colspan]')[1:]])
+# print(s)
+
 import requests
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/4.8/8/index.html'
+url = 'https://parsinger.ru/4.8/6/index.html'
 html = requests.get(url)
 html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
-s = sum([int(i.text) for i in soup.select('[colspan]')[1:]])
-print(s)
+headers = [i.text for i in soup.select('th')]
