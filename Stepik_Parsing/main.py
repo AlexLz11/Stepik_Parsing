@@ -955,3 +955,16 @@
 #         site, in_stock, price])
 # # 4 ------------------------------------------------------
 
+import requests
+from bs4 import BeautifulSoup
+
+url = 'https://parsinger.ru/html/index4_page_1.html'
+html = requests.get(url)
+html.encoding = 'utf-8'
+soup = BeautifulSoup(html.text, 'lxml')
+
+links = [a['href'] for a in soup.find('div', 'pagen').select('a')]
+headers = ['Наименование', 'Бренд', 'Форм-фактор', 'Ёмкость', 'Объем буферной памяти', 'Цена']
+with open()
+for link in links:
+    
