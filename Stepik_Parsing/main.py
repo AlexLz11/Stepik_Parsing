@@ -956,6 +956,7 @@
 # # 4 ------------------------------------------------------
 
 import requests
+import csv  
 from bs4 import BeautifulSoup
 
 url = 'https://parsinger.ru/html/index4_page_1.html'
@@ -964,7 +965,14 @@ html.encoding = 'utf-8'
 soup = BeautifulSoup(html.text, 'lxml')
 
 links = [a['href'] for a in soup.find('div', 'pagen').select('a')]
+print(links)
 headers = ['Наименование', 'Бренд', 'Форм-фактор', 'Ёмкость', 'Объем буферной памяти', 'Цена']
-with open()
-for link in links:
-    
+with open('Stepik_Parsing/result.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+    writer = csv.writer(ouf, delimiter=';')
+    writer.writerow(headers)
+with open('Stepik_Parsing/result.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
+    writer = csv.writer(ouf, delimiter=';')
+    for link in links:
+        for box in soup.select('div.img_box'):
+            data = [box.find('a', 'name_item').text.strip()] + [tag.text.split(': ')[1].strip() for tag in box.select('li')] + [box.find('p', 'price').text]
+            writer.writerow(data)
