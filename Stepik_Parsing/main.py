@@ -1031,22 +1031,29 @@ import csv
 from bs4 import BeautifulSoup
 
 def get_soup(url, parser='lxml'):
-    html = requests.get(url)
+    html = rs.get(url)
     html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
+def card_data(card):
+    item = card.select_one('a.name_item').text.strip()
+    descr = [i.text.split(':')[1].strip() for i in card.select('li')]
+    price = card.select_one('p.price').text.strip()
+    return [item, *descr, price]
+
 scheme = 'https://parsinger.ru/html/'
 url = 'https://parsinger.ru/html/index1_page_1.html'
-links = []
+cards = []
 with requests.Session() as rs:
     soup = get_soup(url)
     sections = [scheme + a['href'] for a in soup.select_one('div.nav_menu').select('a')]
     for sect in sections:
         soup = get_soup(sect)
         pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
-        links.extend(pages)
-    with open('Stepik_Parsing/GoodsInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
-        wr = csv.writer(ouf, delimiter=';')
-        for link in links:
-            soup = get_soup(link)
-            
+        for page in pages:
+            soup = get_soup(page)
+            cards.extend(soup.select('div.item'))
+with open('Stepik_Parsing/GoodsInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+    writer = csv.writer(ouf, delimiter=';')
+    for card in cards:
+        writer.writerow(card_data(card))
