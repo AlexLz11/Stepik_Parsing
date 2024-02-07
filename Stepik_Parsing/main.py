@@ -955,24 +955,72 @@
 #         site, in_stock, price])
 # # 4 ------------------------------------------------------
 
+# 4.9.1 Сбор данных о HDD
+# import requests
+# import csv  
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, parser='lxml'):
+#     html = requests.get(url)
+#     html.encoding = 'utf-8'
+#     return BeautifulSoup(html.text, parser)
+
+# url = 'https://parsinger.ru/html/index4_page_1.html'
+# html = requests.get(url)
+# html.encoding = 'utf-8'
+# soup = get_soup(url)
+
+# links = [a['href'] for a in soup.find('div', 'pagen').select('a')]
+# headers = ['Наименование', 'Бренд', 'Форм-фактор', 'Ёмкость', 'Объем буферной памяти', 'Цена']
+# with open('Stepik_Parsing/result.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+#     writer = csv.writer(ouf, delimiter=';')
+#     writer.writerow(headers)
+# with open('Stepik_Parsing/result.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
+#     writer = csv.writer(ouf, delimiter=';')
+#     scheme = 'https://parsinger.ru/html/'
+#     for link in links:
+#         url = scheme + link
+#         soup = get_soup(url)
+#         for box in soup.select('div.img_box'):
+#             data = [box.find('a', 'name_item').text.strip()] + [tag.text.split(': ')[1].strip() for tag in box.select('li')] + [box.find('p', 'price').text]
+#             writer.writerow(data)
+
+# 4.9.2 Сбор данных о часах с карточек товара
 import requests
-import csv  
+import csv
 from bs4 import BeautifulSoup
 
-url = 'https://parsinger.ru/html/index4_page_1.html'
-html = requests.get(url)
-html.encoding = 'utf-8'
-soup = BeautifulSoup(html.text, 'lxml')
+def get_soup(url, parser='lxml'):
+    html = requests.get(url)
+    html.encoding = 'utf-8'
+    return BeautifulSoup(html.text, parser)
 
-links = [a['href'] for a in soup.find('div', 'pagen').select('a')]
-print(links)
-headers = ['Наименование', 'Бренд', 'Форм-фактор', 'Ёмкость', 'Объем буферной памяти', 'Цена']
-with open('Stepik_Parsing/result.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
-    writer = csv.writer(ouf, delimiter=';')
-    writer.writerow(headers)
-with open('Stepik_Parsing/result.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
-    writer = csv.writer(ouf, delimiter=';')
-    for link in links:
-        for box in soup.select('div.img_box'):
-            data = [box.find('a', 'name_item').text.strip()] + [tag.text.split(': ')[1].strip() for tag in box.select('li')] + [box.find('p', 'price').text]
-            writer.writerow(data)
+def data_row(link):
+    soup = get_soup(link)
+    product = soup.select_one('#p_header').text.strip()
+    article = soup.select_one('.article').text.split(':')[1].strip()
+    qt = int(soup.select_one('#in_stock').text.split(':')[1].strip())
+    price = soup.select_one('#price').text.strip()
+    old_price = soup.select_one('#old_price').text.strip()
+    descr = [i.text.split(': ')[1].strip() for i in soup.select('li')]
+    data = [product, article, *descr, qt, price, old_price, link]
+    return data
+
+headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Тип', 'Технология экрана', 'Материал корпуса', 'Материал браслета', 'Размер', 'Сайт производителя', 'Наличие','Цена', 'Старая цена', 'Ссылка на карточку с товаром']
+with open('Stepik_Parsing/WatchInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+    wr = csv.writer(ouf, delimiter=';')
+    wr.writerow(headers)
+scheme = 'https://parsinger.ru/html/'
+url = 'https://parsinger.ru/html/index1_page_1.html'
+soup = get_soup(url)
+pages = [a['href'] for a in soup.select_one('.pagen').select('a')]
+with open('Stepik_Parsing/WatchInfo.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
+    wr = csv.writer(ouf, delimiter=';')
+    for page in pages:
+        link = scheme + page
+        soup = get_soup(link)
+        cards = [a['href'] for a in soup.select('a.name_item')]
+        for card in cards:
+            link = scheme + card
+            data = data_row(link)
+            wr.writerow(data)
