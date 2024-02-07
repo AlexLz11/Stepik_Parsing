@@ -986,6 +986,46 @@
 #             writer.writerow(data)
 
 # 4.9.2 Сбор данных о часах с карточек товара
+# import requests
+# import csv
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, parser='lxml'):
+#     html = requests.get(url)
+#     html.encoding = 'utf-8'
+#     return BeautifulSoup(html.text, parser)
+
+# def data_row(link):
+#     soup = get_soup(link)
+#     product = soup.select_one('#p_header').text.strip()
+#     article = soup.select_one('.article').text.split(':')[1].strip()
+#     qt = int(soup.select_one('#in_stock').text.split(':')[1].strip())
+#     price = soup.select_one('#price').text.strip()
+#     old_price = soup.select_one('#old_price').text.strip()
+#     descr = [i.text.split(': ')[1].strip() for i in soup.select('li')]
+#     data = [product, article, *descr, qt, price, old_price, link]
+#     return data
+
+# headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Тип', 'Технология экрана', 'Материал корпуса', 'Материал браслета', 'Размер', 'Сайт производителя', 'Наличие','Цена', 'Старая цена', 'Ссылка на карточку с товаром']
+# with open('Stepik_Parsing/WatchInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+#     wr = csv.writer(ouf, delimiter=';')
+#     wr.writerow(headers)
+# scheme = 'https://parsinger.ru/html/'
+# url = 'https://parsinger.ru/html/index1_page_1.html'
+# soup = get_soup(url)
+# pages = [a['href'] for a in soup.select_one('.pagen').select('a')]
+# with open('Stepik_Parsing/WatchInfo.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
+#     wr = csv.writer(ouf, delimiter=';')
+#     for page in pages:
+#         link = scheme + page
+#         soup = get_soup(link)
+#         cards = [a['href'] for a in soup.select('a.name_item')]
+#         for card in cards:
+#             link = scheme + card
+#             data = data_row(link)
+#             wr.writerow(data)
+
+# 4.9.3 Сбор данных со всех карточек(160шт)
 import requests
 import csv
 from bs4 import BeautifulSoup
@@ -995,32 +1035,18 @@ def get_soup(url, parser='lxml'):
     html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
-def data_row(link):
-    soup = get_soup(link)
-    product = soup.select_one('#p_header').text.strip()
-    article = soup.select_one('.article').text.split(':')[1].strip()
-    qt = int(soup.select_one('#in_stock').text.split(':')[1].strip())
-    price = soup.select_one('#price').text.strip()
-    old_price = soup.select_one('#old_price').text.strip()
-    descr = [i.text.split(': ')[1].strip() for i in soup.select('li')]
-    data = [product, article, *descr, qt, price, old_price, link]
-    return data
-
-headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Тип', 'Технология экрана', 'Материал корпуса', 'Материал браслета', 'Размер', 'Сайт производителя', 'Наличие','Цена', 'Старая цена', 'Ссылка на карточку с товаром']
-with open('Stepik_Parsing/WatchInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
-    wr = csv.writer(ouf, delimiter=';')
-    wr.writerow(headers)
 scheme = 'https://parsinger.ru/html/'
 url = 'https://parsinger.ru/html/index1_page_1.html'
-soup = get_soup(url)
-pages = [a['href'] for a in soup.select_one('.pagen').select('a')]
-with open('Stepik_Parsing/WatchInfo.csv', 'a', encoding='utf-8-sig', newline='') as ouf:
-    wr = csv.writer(ouf, delimiter=';')
-    for page in pages:
-        link = scheme + page
-        soup = get_soup(link)
-        cards = [a['href'] for a in soup.select('a.name_item')]
-        for card in cards:
-            link = scheme + card
-            data = data_row(link)
-            wr.writerow(data)
+links = []
+with requests.Session() as rs:
+    soup = get_soup(url)
+    sections = [scheme + a['href'] for a in soup.select_one('div.nav_menu').select('a')]
+    for sect in sections:
+        soup = get_soup(sect)
+        pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
+        links.extend(pages)
+    with open('Stepik_Parsing/GoodsInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+        wr = csv.writer(ouf, delimiter=';')
+        for link in links:
+            soup = get_soup(link)
+            
