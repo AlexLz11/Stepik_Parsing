@@ -1068,16 +1068,39 @@ def get_soup(url, session=None, parser='lxml'):
     html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
-def get_cards(url, session=None):
-    cards = []
-    scheme = 'https://parsinger.ru/html/'
+def link_generator(url, scheme, session=None):
     soup = get_soup(url, session)
     categories = [a['href'] + scheme for a in soup.select_one('div.nav_menu').select('a')]
     for category in categories:
         soup = get_soup(category, session)
         pages = [a['href'] + scheme for a in soup.select_one('div.pagen').select('a')]
         for page in pages:
-            
+            soup = get_soup(page, session)
+            links = [a['href'] + scheme for a in soup.select('a.name_item')]
+            for link in links:
+                yield link
 
+def get_card_row(url, session=None):
+    soup = get_soup(url, session)
+    row=[]
+    selectors = ['#p_header', 'p.article', '#brand', '#model', '#in_stock', '#price', '#old_price']
+    for selector in selectors:
+        if selector in ('#p_header', '#price', '#old_price'):
+            row.append(soup.select_one(selector).text.strip())
+        else:
+            row.append(soup.select(selector).text.split(':').strip())
+    row.append(url)
+    return row
 
 url = 'https://parsinger.ru/html/index1_page_1.html'
+scheme = 'https://parsinger.ru/html/'
+headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Наличие', 'Цена', 'Старая цена', 'Ссылка']
+with open('ProductsInfo.scv', 'w', encoding='utf-8-sig', newline='') as ouf:
+    writer = csv.writer(ouf, delimiter=';')
+    writer.writerow(headers)
+    with requests.Session() as rs:
+        lg = link_generator(url, scheme, rs)
+        for link in lg:
+            row = get_card_row(link, rs)
+            writer.writerow(row)
+        
