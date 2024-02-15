@@ -1059,14 +1059,74 @@
 #         writer.writerow(card_data(card))
 
 # 4.9.4 Рецензируйте код других учеников
+# import requests
+# import csv
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, session=None, parser='lxml'):
+#     '''Функция скачивает содержимое html страницы по переданной ссылке в качестве аргумента и возвращает "приготовленный суп"'''
+#     try:
+#         # В зависимости от того предана ли вторым аргументом ссылка на объект сессию отправляет запрос с испоьзованием сессии, либо обычный get запрос
+#         html = session.get(url) if session else requests.get(url)
+#         html.encoding = 'utf-8'
+#         if not html.ok:
+#             raise requests.HTTPError(html.status_code)
+#     except (requests.ConnectionError, requests.HTTPError, requests.Timeout) as e:
+#         print(f'Перехвачено исключение типа: {type(e).__name__}')
+#         print(f'Сообщение об ошибке: {str(e)}')
+#     return BeautifulSoup(html.text, parser)
+
+# def link_generator(url, scheme, session=None):
+#     '''Генератор ссылок, принимает в качестве аргумента ссылку на главную страницу и на каждой итеррации возвращает очередную ссылку на карточку товара'''
+#     soup = get_soup(url, session)
+#     # Формирование списка ссылок на категории товара
+#     categories = [scheme + a['href'] for a in soup.select_one('div.nav_menu').select('a')]
+#     for category in categories:
+#         soup = get_soup(category, session)
+#         # Формирование списка ссылок страниц для текущей категории товаров
+#         pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
+#         for page in pages:
+#             soup = get_soup(page, session)
+#             # Формирование списка ссылок на карточки товара для текущей страницы
+#             links = [scheme + a['href'] for a in soup.select('a.name_item')]
+#             for link in links:
+#                 yield link
+
+# def get_card_row(url, session=None):
+#     '''Функция принимает в качестве аргумента ссылку на карточку товара и возвращает список, элементами которого являются требуемые характеристики товара'''
+#     soup = get_soup(url, session)
+#     row=[]
+#     selectors = ['#p_header', 'p.article', '#brand', '#model', '#in_stock', '#price', '#old_price'] # Селекторы для нахождения интересующих характеристик на странице
+#     for selector in selectors:
+#         # Выбор обработки текстовой информации, содержащейся тегах в зависимости от структуры записи
+#         if selector in ('#p_header', '#price', '#old_price'):
+#             row.append(soup.select_one(selector).text.strip())
+#         else:
+#             row.append(soup.select_one(selector).text.split(':')[1].strip())
+#     row.append(url)
+#     return row
+
+# url = 'https://parsinger.ru/html/index1_page_1.html' # URL основной страницы сайта
+# scheme = 'https://parsinger.ru/html/' # Начальная часть ссылки к которой будет добавляться относительная ссылка для формирования абсолютной
+# headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Наличие', 'Цена', 'Старая цена', 'Ссылка'] # Список заголовков таблицы
+# # Открытие файла CSV в корневом каталоге проекта в режиме записи
+# with open('ProductsInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
+#     writer = csv.writer(ouf, delimiter=';')
+#     writer.writerow(headers) # Запись заголовков в файл
+#     # Создание сесси в рамках которой будут идти все запросы по ссылкам без разрыва соединения с сервером
+#     with requests.Session() as rs:
+#         lg = link_generator(url, scheme, rs) # Создание генератора ссылок на страницы с карточками товаров
+#         for link in lg:
+#             row = get_card_row(link, rs) # Формирование информации о товаре в виде списка
+#             writer.writerow(row) # Запись строки с информацие о товаре в файл CSV
+
+# 4.10.1 Сбор данных о HDD в JSON
 import requests
-import csv
+import json
 from bs4 import BeautifulSoup
 
 def get_soup(url, session=None, parser='lxml'):
-    '''Функция скачивает содержимое html страницы по переданной ссылке в качестве аргумента и возвращает "приготовленный суп"'''
     try:
-        # В зависимости от того предана ли вторым аргументом ссылка на объект сессию отправляет запрос с испоьзованием сессии, либо обычный get запрос
         html = session.get(url) if session else requests.get(url)
         html.encoding = 'utf-8'
         if not html.ok:
@@ -1076,47 +1136,22 @@ def get_soup(url, session=None, parser='lxml'):
         print(f'Сообщение об ошибке: {str(e)}')
     return BeautifulSoup(html.text, parser)
 
-def link_generator(url, scheme, session=None):
-    '''Генератор ссылок, принимает в качестве аргумента ссылку на главную страницу и на каждой итеррации возвращает очередную ссылку на карточку товара'''
-    soup = get_soup(url, session)
-    # Формирование списка ссылок на категории товара
-    categories = [scheme + a['href'] for a in soup.select_one('div.nav_menu').select('a')]
-    for category in categories:
-        soup = get_soup(category, session)
-        # Формирование списка ссылок страниц для текущей категории товаров
-        pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
-        for page in pages:
-            soup = get_soup(page, session)
-            # Формирование списка ссылок на карточки товара для текущей страницы
-            links = [scheme + a['href'] for a in soup.select('a.name_item')]
-            for link in links:
-                yield link
-
-def get_card_row(url, session=None):
-    '''Функция принимает в качестве аргумента ссылку на карточку товара и возвращает список, элементами которого являются требуемые характеристики товара'''
-    soup = get_soup(url, session)
-    row=[]
-    selectors = ['#p_header', 'p.article', '#brand', '#model', '#in_stock', '#price', '#old_price'] # Селекторы для нахождения интересующих характеристик на странице
-    for selector in selectors:
-        # Выбор обработки текстовой информации, содержащейся тегах в зависимости от структуры записи
-        if selector in ('#p_header', '#price', '#old_price'):
-            row.append(soup.select_one(selector).text.strip())
-        else:
-            row.append(soup.select_one(selector).text.split(':')[1].strip())
-    row.append(url)
-    return row
-
-url = 'https://parsinger.ru/html/index1_page_1.html' # URL основной страницы сайта
-scheme = 'https://parsinger.ru/html/' # Начальная часть ссылки к которой будет добавляться относительная ссылка для формирования абсолютной
-headers = ['Наименование', 'Артикул', 'Бренд', 'Модель', 'Наличие', 'Цена', 'Старая цена', 'Ссылка'] # Список заголовков таблицы
-# Открытие файла CSV в корневом каталоге проекта в режиме записи
-with open('ProductsInfo.csv', 'w', encoding='utf-8-sig', newline='') as ouf:
-    writer = csv.writer(ouf, delimiter=';')
-    writer.writerow(headers) # Запись заголовков в файл
-    # Создание сесси в рамках которой будут идти все запросы по ссылкам без разрыва соединения с сервером
-    with requests.Session() as rs:
-        lg = link_generator(url, scheme, rs) # Создание генератора ссылок на страницы с карточками товаров
-        for link in lg:
-            row = get_card_row(link, rs) # Формирование информации о товаре в виде списка
-            writer.writerow(row) # Запись строки с информацие о товаре в файл CSV
-        
+url = 'https://parsinger.ru/html/index4_page_1.html'
+scheme = 'https://parsinger.ru/html/'
+soup = get_soup(url)
+data_json = []
+pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
+for page in pages:
+    soup = get_soup(page)
+    for hdd in [tag for tag in soup.select('div.img_box')]:
+        dc = {
+            'Наименование': hdd.select_one('.name_item').text.strip(),
+            'Бренд': hdd.select('li')[0].text.split(':')[1].strip(),
+            'Форм-фактор': hdd.select('li')[1].text.split(':')[1].strip(),
+            'Ёмкость': hdd.select('li')[2].text.split(':')[1].strip(),
+            'Объем буферной памяти': hdd.select('li')[3].text.split(':')[1].strip(),
+            'Цена': hdd.select_one('.price').text.strip()
+        }
+        data_json.append(dc)
+with open('Stepik_Parsing/hdd_info.json', 'w', encoding='utf-8') as ouf:
+    json.dump(data_json, ouf, indent=4, ensure_ascii=False)
