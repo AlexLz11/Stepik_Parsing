@@ -1121,37 +1121,100 @@
 #             writer.writerow(row) # Запись строки с информацие о товаре в файл CSV
 
 # 4.10.1 Сбор данных о HDD в JSON
+# import requests
+# import json
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, session=None, parser='lxml'):
+#     try:
+#         html = session.get(url) if session else requests.get(url)
+#         html.encoding = 'utf-8'
+#         if not html.ok:
+#             raise requests.HTTPError(html.status_code)
+#     except (requests.ConnectionError, requests.HTTPError, requests.Timeout) as e:
+#         print(f'Перехвачено исключение типа: {type(e).__name__}')
+#         print(f'Сообщение об ошибке: {str(e)}')
+#     return BeautifulSoup(html.text, parser)
+
+# url = 'https://parsinger.ru/html/index4_page_1.html'
+# scheme = 'https://parsinger.ru/html/'
+# soup = get_soup(url)
+# data_json = []
+# pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
+# for page in pages:
+#     soup = get_soup(page)
+#     for hdd in [tag for tag in soup.select('div.img_box')]:
+#         dc = {
+#             'Наименование': hdd.select_one('.name_item').text.strip(),
+#             'Бренд': hdd.select('li')[0].text.split(':')[1].strip(),
+#             'Форм-фактор': hdd.select('li')[1].text.split(':')[1].strip(),
+#             'Ёмкость': hdd.select('li')[2].text.split(':')[1].strip(),
+#             'Объем буферной памяти': hdd.select('li')[3].text.split(':')[1].strip(),
+#             'Цена': hdd.select_one('.price').text.strip()
+#         }
+#         data_json.append(dc)
+# with open('Stepik_Parsing/hdd_info.json', 'w', encoding='utf-8') as ouf:
+#     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+
+# 4.10.2 Сбор данных со всех карточек товара
+# import requests
+# import json
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, session=None, parser='lxml'):
+#     try:
+#         html = session.get(url) if session else requests.get(url)
+#         html.encoding = 'utf-8'
+#         if not html.ok:
+#             raise requests.HTTPError(html.status_code)
+#     except (requests.ConnectionError, requests.HTTPError, requests.Timeout) as e:
+#         print(f'Перехвачено исключение типа: {type(e).__name__}')
+#         print(f'Сообщение об ошибке: {str(e)}')
+#     return BeautifulSoup(html.text, parser)
+
+# def get_info_json(tag):
+#     dc = {}
+#     dc['Наименование'] = tag.select_one('.name_item').text.strip()
+#     for key, val in [i.text.split(':') for i in tag.select('li')]:
+#         dc[key.strip()] = val.strip()
+#     dc['Цена'] = tag.select_one('.price').text.strip()
+#     return dc
+
+# url = 'https://parsinger.ru/html/index1_page_1.html'
+# scheme = 'https://parsinger.ru/html/'
+# data_json = []
+# with requests.Session() as rs:
+#     soup = get_soup(url, rs)
+#     categories = [scheme + a['href'] for a in soup.select_one('.nav_menu').select('a')]
+#     for category in categories:
+#         soup = get_soup(category, rs)
+#         pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
+#         for page in pages:
+#             soup = get_soup(page, rs)
+#             pg_data = [get_info_json(tag) for tag in soup.select('.img_box')]
+#             data_json.extend(pg_data)
+# with open('Stepik_Parsing/all_goods_info.json', 'w', encoding='utf-8') as ouf:
+#     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+
+# 4.10.3 Сбор данных о телефонах с карточек товара
 import requests
 import json
 from bs4 import BeautifulSoup
 
-def get_soup(url, session=None, parser='lxml'):
-    try:
-        html = session.get(url) if session else requests.get(url)
-        html.encoding = 'utf-8'
-        if not html.ok:
-            raise requests.HTTPError(html.status_code)
-    except (requests.ConnectionError, requests.HTTPError, requests.Timeout) as e:
-        print(f'Перехвачено исключение типа: {type(e).__name__}')
-        print(f'Сообщение об ошибке: {str(e)}')
+def get_soup(url, parser='lxml'):
+    html = requests.get(url)
+    html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
-url = 'https://parsinger.ru/html/index4_page_1.html'
-scheme = 'https://parsinger.ru/html/'
-soup = get_soup(url)
-data_json = []
-pages = [scheme + a['href'] for a in soup.select_one('div.pagen').select('a')]
-for page in pages:
-    soup = get_soup(page)
-    for hdd in [tag for tag in soup.select('div.img_box')]:
-        dc = {
-            'Наименование': hdd.select_one('.name_item').text.strip(),
-            'Бренд': hdd.select('li')[0].text.split(':')[1].strip(),
-            'Форм-фактор': hdd.select('li')[1].text.split(':')[1].strip(),
-            'Ёмкость': hdd.select('li')[2].text.split(':')[1].strip(),
-            'Объем буферной памяти': hdd.select('li')[3].text.split(':')[1].strip(),
-            'Цена': hdd.select_one('.price').text.strip()
-        }
-        data_json.append(dc)
-with open('Stepik_Parsing/hdd_info.json', 'w', encoding='utf-8') as ouf:
-    json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+def link_generator(url):
+    scheme = 'https://parsinger.ru/html/'
+    soup = get_soup(url)
+    pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
+    for page in pages:
+        soup = get_soup(page)
+        links = [scheme + a['href'] for a in soup.select('.name_item')]
+        for link in links:
+            return link
+
+def get_card_info(url):
+    pass
