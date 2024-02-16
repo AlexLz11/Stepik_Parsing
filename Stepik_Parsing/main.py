@@ -1214,7 +1214,21 @@ def link_generator(url):
         soup = get_soup(page)
         links = [scheme + a['href'] for a in soup.select('.name_item')]
         for link in links:
-            return link
+            yield link
 
 def get_card_info(url):
-    pass
+    soup = get_soup(url)
+    dc = {}
+    for li in soup.select('li'):
+        key = li.text.split(':')[0].strip()
+        val = li.text.split(':')[1].strip()
+        dc[key] = val
+    return dc
+
+url = 'https://parsinger.ru/html/index2_page_1.html'
+data_json = []
+lg = link_generator(url)
+for link in lg:
+    data_json.append(get_card_info(link))
+with open('Stepik_Parsing/phone_info.json', 'w', encoding='utf-8') as ouf:
+    json.dump(data_json, ouf, indent=4, ensure_ascii=False)
