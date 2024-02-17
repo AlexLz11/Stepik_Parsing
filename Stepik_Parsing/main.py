@@ -1218,11 +1218,15 @@ def link_generator(url):
 
 def get_card_info(url):
     soup = get_soup(url)
-    dc = {}
-    for li in soup.select('li'):
-        key = li.text.split(':')[0].strip()
-        val = li.text.split(':')[1].strip()
-        dc[key] = val
+    description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
+    dc = {'categories': 'mobile',
+          'name': soup.select_one('#p_header').text.strip(),
+          'article': soup.select_one('p.article').text.split(':')[1].strip(),
+          'description': description,
+          'count': soup.select_one('#in_stock').text.split(':')[1].strip(),
+          'price': soup.select_one('#price').text.strip(),
+          'old_price': soup.select_one('#old_price').text.strip(),
+          'link': url}
     return dc
 
 url = 'https://parsinger.ru/html/index2_page_1.html'
