@@ -1196,30 +1196,70 @@
 # with open('Stepik_Parsing/all_goods_info.json', 'w', encoding='utf-8') as ouf:
 #     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
 
-# 4.10.3 Сбор данных о телефонах с карточек товара
+# # 4.10.3 Сбор данных о телефонах с карточек товара
+# import requests
+# import json
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, parser='lxml'):
+#     html = requests.get(url)
+#     html.encoding = 'utf-8'
+#     return BeautifulSoup(html.text, parser)
+
+# def link_generator(url):
+#     scheme = 'https://parsinger.ru/html/'
+#     soup = get_soup(url)
+#     pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
+#     for page in pages:
+#         soup = get_soup(page)
+#         links = [scheme + a['href'] for a in soup.select('.name_item')]
+#         for link in links:
+#             yield link
+
+# def get_card_info(url):
+#     soup = get_soup(url)
+#     description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
+#     dc = {'categories': 'mobile',
+#           'name': soup.select_one('#p_header').text.strip(),
+#           'article': soup.select_one('p.article').text.split(':')[1].strip(),
+#           'description': description,
+#           'count': soup.select_one('#in_stock').text.split(':')[1].strip(),
+#           'price': soup.select_one('#price').text.strip(),
+#           'old_price': soup.select_one('#old_price').text.strip(),
+#           'link': url}
+#     return dc
+
+# url = 'https://parsinger.ru/html/index2_page_1.html'
+# data_json = []
+# lg = link_generator(url)
+# for link in lg:
+#     data_json.append(get_card_info(link))
+# with open('Stepik_Parsing/phone_info.json', 'w', encoding='utf-8') as ouf:
+#     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+
+# 4.10.4 Рецензируйте код других учеников
 import requests
 import json
 from bs4 import BeautifulSoup
 
-def get_soup(url, parser='lxml'):
-    html = requests.get(url)
+def get_soup(url, session, parser='lxml'):
+    html = session.get(url) if session else requests.get(url)
     html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
 def link_generator(url):
-    scheme = 'https://parsinger.ru/html/'
-    soup = get_soup(url)
+    soup = get_soup(url, rs)
     pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
     for page in pages:
-        soup = get_soup(page)
+        soup = get_soup(page, rs)
         links = [scheme + a['href'] for a in soup.select('.name_item')]
         for link in links:
             yield link
 
-def get_card_info(url):
-    soup = get_soup(url)
+def get_card_info(category, url):
+    soup = get_soup(url, rs)
     description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
-    dc = {'categories': 'mobile',
+    dc = {'categories': category,
           'name': soup.select_one('#p_header').text.strip(),
           'article': soup.select_one('p.article').text.split(':')[1].strip(),
           'description': description,
@@ -1229,10 +1269,17 @@ def get_card_info(url):
           'link': url}
     return dc
 
-url = 'https://parsinger.ru/html/index2_page_1.html'
+url = 'https://parsinger.ru/html/index1_page_1.html'
+scheme = 'https://parsinger.ru/html/'
 data_json = []
-lg = link_generator(url)
-for link in lg:
-    data_json.append(get_card_info(link))
-with open('Stepik_Parsing/phone_info.json', 'w', encoding='utf-8') as ouf:
+with requests.Session() as rs:
+    soup = get_soup(url, rs)
+    category_names = ['watch', 'mobile', 'mouse', 'hdd', 'headphones']
+    category_urls = [scheme + a['href'] for a in soup.select_one('.nav_menu').select('a')]
+    categories = dict(zip(category_names, category_urls))
+    for category, url in categories.items():
+        lg = link_generator(url)
+        for link in lg:
+            data_json.append(get_card_info(category, link))
+with open('all_goods_info.json', 'w', encoding='utf-8') as ouf:
     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
