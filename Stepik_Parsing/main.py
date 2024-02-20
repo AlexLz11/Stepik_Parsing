@@ -1243,11 +1243,15 @@ import json
 from bs4 import BeautifulSoup
 
 def get_soup(url, session, parser='lxml'):
+    '''Функция скачивает содержимое html страницы по переданной ссылке в качестве аргумента 
+    и возвращает "приготовленный суп"'''
     html = session.get(url) if session else requests.get(url)
     html.encoding = 'utf-8'
     return BeautifulSoup(html.text, parser)
 
 def link_generator(url):
+    '''Генератор ссылок, принимает в качестве аргумента ссылку на страницу категории товара 
+    и на каждой итеррации возвращает очередную ссылку на карточку товара этой категории'''
     soup = get_soup(url, rs)
     pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
     for page in pages:
@@ -1257,6 +1261,8 @@ def link_generator(url):
             yield link
 
 def get_card_info(category, url):
+    '''Функция принимает в качестве аргументов наименование катенории и ссылку на карточку товара из этой категории
+    и возвращает словарь, элементами которого являются требуемые характеристики товара'''
     soup = get_soup(url, rs)
     description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
     dc = {'categories': category,
@@ -1274,10 +1280,10 @@ scheme = 'https://parsinger.ru/html/'
 data_json = []
 with requests.Session() as rs:
     soup = get_soup(url, rs)
-    category_names = ['watch', 'mobile', 'mouse', 'hdd', 'headphones']
     category_urls = [scheme + a['href'] for a in soup.select_one('.nav_menu').select('a')]
-    categories = dict(zip(category_names, category_urls))
-    for category, url in categories.items():
+    for url in category_urls:
+        soup = get_soup(url, rs)
+        category = soup.select_one('a.name_item')['href'].split('/')[0]
         lg = link_generator(url)
         for link in lg:
             data_json.append(get_card_info(category, link))
