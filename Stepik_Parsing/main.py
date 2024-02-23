@@ -1238,54 +1238,90 @@
 #     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
 
 # 4.10.4 Рецензируйте код других учеников
+# import requests
+# import json
+# from bs4 import BeautifulSoup
+
+# def get_soup(url, session, parser='lxml'):
+#     '''Функция скачивает содержимое html страницы по переданной ссылке в качестве аргумента 
+#     и возвращает "приготовленный суп"'''
+#     html = session.get(url) if session else requests.get(url)
+#     html.encoding = 'utf-8'
+#     return BeautifulSoup(html.text, parser)
+
+# def link_generator(url):
+#     '''Генератор ссылок, принимает в качестве аргумента ссылку на страницу категории товара 
+#     и на каждой итеррации возвращает очередную ссылку на карточку товара этой категории'''
+#     soup = get_soup(url, rs)
+#     pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
+#     for page in pages:
+#         soup = get_soup(page, rs)
+#         links = [scheme + a['href'] for a in soup.select('.name_item')]
+#         for link in links:
+#             yield link
+
+# def get_card_info(category, url):
+#     '''Функция принимает в качестве аргументов наименование катенории и ссылку на карточку товара из этой категории
+#     и возвращает словарь, элементами которого являются требуемые характеристики товара'''
+#     soup = get_soup(url, rs)
+#     description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
+#     dc = {'categories': category,
+#           'name': soup.select_one('#p_header').text.strip(),
+#           'article': soup.select_one('p.article').text.split(':')[1].strip(),
+#           'description': description,
+#           'count': soup.select_one('#in_stock').text.split(':')[1].strip(),
+#           'price': soup.select_one('#price').text.strip(),
+#           'old_price': soup.select_one('#old_price').text.strip(),
+#           'link': url}
+#     return dc
+
+# url = 'https://parsinger.ru/html/index1_page_1.html'
+# scheme = 'https://parsinger.ru/html/'
+# data_json = []
+# with requests.Session() as rs:
+#     soup = get_soup(url, rs)
+#     category_urls = [scheme + a['href'] for a in soup.select_one('.nav_menu').select('a')]
+#     for url in category_urls:
+#         soup = get_soup(url, rs)
+#         category = soup.select_one('a.name_item')['href'].split('/')[0]
+#         lg = link_generator(url)
+#         for link in lg:
+#             data_json.append(get_card_info(category, link))
+# with open('all_goods_info.json', 'w', encoding='utf-8') as ouf:
+#     json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+
+# 4.11 Парсим JSON
+# ********************************
+
+# 4.11.1 Анализ количества товаров через JSON
+# import requests
+
+# url = 'https://parsinger.ru/downloads/get_json/res.json'
+# resp = requests.get(url).json()
+# goods_qt = {}
+# for dc in resp:
+#     key, var = dc['categories'], int(dc['count'])
+#     goods_qt[key] = goods_qt.get(key, 0) + var
+# print(goods_qt)
+
+# 4.11.2 Вычисление Стоимости Товаров в Каждой Категории
+# import requests
+
+# url = 'https://parsinger.ru/downloads/get_json/res.json'
+# resp = requests.get(url).json()
+# goods_cost = {}
+# for dc in resp:
+#     category, qt, price = dc['categories'], int(dc['count']), int(dc['price'].split()[0])
+#     goods_cost[category] = goods_cost.get(category, 0) + qt * price
+# print(goods_cost)
+
+# 4.11.3 Вычисление Произведения 'article' и 'rating'
 import requests
-import json
-from bs4 import BeautifulSoup
 
-def get_soup(url, session, parser='lxml'):
-    '''Функция скачивает содержимое html страницы по переданной ссылке в качестве аргумента 
-    и возвращает "приготовленный суп"'''
-    html = session.get(url) if session else requests.get(url)
-    html.encoding = 'utf-8'
-    return BeautifulSoup(html.text, parser)
-
-def link_generator(url):
-    '''Генератор ссылок, принимает в качестве аргумента ссылку на страницу категории товара 
-    и на каждой итеррации возвращает очередную ссылку на карточку товара этой категории'''
-    soup = get_soup(url, rs)
-    pages = [scheme + a['href'] for a in soup.select_one('.pagen').select('a')]
-    for page in pages:
-        soup = get_soup(page, rs)
-        links = [scheme + a['href'] for a in soup.select('.name_item')]
-        for link in links:
-            yield link
-
-def get_card_info(category, url):
-    '''Функция принимает в качестве аргументов наименование катенории и ссылку на карточку товара из этой категории
-    и возвращает словарь, элементами которого являются требуемые характеристики товара'''
-    soup = get_soup(url, rs)
-    description = {li['id']: li.text.split(':')[1].strip() for li in soup.select('li')}
-    dc = {'categories': category,
-          'name': soup.select_one('#p_header').text.strip(),
-          'article': soup.select_one('p.article').text.split(':')[1].strip(),
-          'description': description,
-          'count': soup.select_one('#in_stock').text.split(':')[1].strip(),
-          'price': soup.select_one('#price').text.strip(),
-          'old_price': soup.select_one('#old_price').text.strip(),
-          'link': url}
-    return dc
-
-url = 'https://parsinger.ru/html/index1_page_1.html'
-scheme = 'https://parsinger.ru/html/'
-data_json = []
-with requests.Session() as rs:
-    soup = get_soup(url, rs)
-    category_urls = [scheme + a['href'] for a in soup.select_one('.nav_menu').select('a')]
-    for url in category_urls:
-        soup = get_soup(url, rs)
-        category = soup.select_one('a.name_item')['href'].split('/')[0]
-        lg = link_generator(url)
-        for link in lg:
-            data_json.append(get_card_info(category, link))
-with open('all_goods_info.json', 'w', encoding='utf-8') as ouf:
-    json.dump(data_json, ouf, indent=4, ensure_ascii=False)
+url = 'https://parsinger.ru/4.6/1/res.json'
+resp = requests.get(url).json()
+data = {}
+for dc in resp:
+    category, article, rating = dc['categories'], int(dc['article']), dc['description']['rating']
+    data[category] = data.get(category, 0) + article * rating
+print(data)
