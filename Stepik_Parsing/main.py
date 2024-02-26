@@ -32,15 +32,27 @@
 # (без вебдрайвер менеджера)
 #-----------------------------------------------------------------------
 
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--no-sandbox')
+# chrome_options.add_argument('--disable-dev-shm-usage')
+# chrome_options.add_argument('--disable-gpu')
+
+# with webdriver.Chrome(options=chrome_options) as driver:
+#     driver.get('https://www.example.com')
+#     print(driver.page_source)
+
+# 5.3 Опции и аргументы. Запуск браузера с расширениями
+import time
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--disable-gpu')
+options_chrome = webdriver.ChromeOptions()
+options_chrome.add_extension('Stepik_Parsing/chrome_ext_pak/coordinates.crx')
 
-with webdriver.Chrome(options=chrome_options) as driver:
-    driver.get('https://www.example.com')
-    print(driver.page_source)
+with webdriver.Chrome(options=options_chrome) as browser:
+    url = 'https://stepik.org/course/104774'
+    browser.get(url)
+    time.sleep(15)
