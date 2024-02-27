@@ -46,13 +46,23 @@
 #     print(driver.page_source)
 
 # 5.3 Опции и аргументы. Запуск браузера с расширениями
+# import time
+# from selenium import webdriver
+
+# options_chrome = webdriver.ChromeOptions()
+# options_chrome.add_extension('Stepik_Parsing/chrome_ext_pak/coordinates.crx')
+
+# with webdriver.Chrome(options=options_chrome) as browser:
+#     url = 'https://stepik.org/course/104774'
+#     browser.get(url)
+#     time.sleep(15)
+
 import time
 from selenium import webdriver
 
 options_chrome = webdriver.ChromeOptions()
-options_chrome.add_extension('Stepik_Parsing/chrome_ext_pak/coordinates.crx')
-
+options_chrome.add_argument('user-data-dir=/home/lizard/.config/google-chrome')
 with webdriver.Chrome(options=options_chrome) as browser:
-    url = 'https://stepik.org/course/104774'
+    url = 'https://google.ru/'
     browser.get(url)
-    time.sleep(15)
+    time.sleep(30)
