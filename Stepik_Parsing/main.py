@@ -57,12 +57,51 @@
 #     browser.get(url)
 #     time.sleep(15)
 
+# import time
+# from selenium import webdriver
+
+# options_chrome = webdriver.ChromeOptions()
+# options_chrome.add_argument('user-data-dir=/home/lizard/.config/google-chrome')
+# with webdriver.Chrome(options=options_chrome) as browser:
+#     url = 'https://google.ru/'
+#     browser.get(url)
+#     time.sleep(30)
+
+# 5.3 Proxy и Selenium
+# import time
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.chrome.options import Options
+
+# opts = Options()
+# opts.add_argument('--headless')
+# opts.add_argument('--no-sandbox')
+# opts.add_argument('--disable-dev-shm-usage')
+# opts.add_argument('--disable-gpu')
+
+# url = 'https://2ip.ru/'
+# with webdriver.Chrome(options=opts) as browser:
+#     browser.get(url)
+#     time.sleep(5)
+#     print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
+#     time.sleep(5)
+
 import time
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
-options_chrome = webdriver.ChromeOptions()
-options_chrome.add_argument('user-data-dir=/home/lizard/.config/google-chrome')
-with webdriver.Chrome(options=options_chrome) as browser:
-    url = 'https://google.ru/'
+proxy = '172.232.111.247:80'
+opts = Options()
+opts.add_argument('--headless')
+opts.add_argument('--no-sandbox')
+opts.add_argument('--disable-dev-shm-usage')
+opts.add_argument('--disable-gpu')
+opts.add_argument('--proxy-server=%s' % proxy)
+
+url = 'https://2ip.ru/'
+with webdriver.Chrome(options=opts) as browser:
     browser.get(url)
-    time.sleep(30)
+    time.sleep(5)
+    print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
+    time.sleep(5)
