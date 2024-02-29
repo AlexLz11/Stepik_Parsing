@@ -86,22 +86,61 @@
 #     print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
 #     time.sleep(5)
 
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+# import time
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
 
-proxy = '172.232.111.247:80'
-opts = Options()
-opts.add_argument('--headless')
-opts.add_argument('--no-sandbox')
-opts.add_argument('--disable-dev-shm-usage')
-opts.add_argument('--disable-gpu')
-opts.add_argument('--proxy-server=%s' % proxy)
+# proxy = '178.218.44.79:3128'
+# opts = webdriver.ChromeOptions()
+# # opts.add_argument('--headless')
+# # opts.add_argument('--no-sandbox')
+# # opts.add_argument('--disable-dev-shm-usage')
+# # opts.add_argument('--disable-gpu')
+# opts.add_argument('--proxy-server=%s' % proxy)
+# # opts.add_argument('--ignore-certificate-errors-spki-list')
+# # opts.add_argument('--ignore-ssl-errors')
+# # opts.add_argument("--ignore-certificate-errors")
 
-url = 'https://2ip.ru/'
-with webdriver.Chrome(options=opts) as browser:
-    browser.get(url)
-    time.sleep(5)
-    print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
-    time.sleep(5)
+# url = 'https://2ip.ru/'
+# with webdriver.Chrome(options=opts) as browser:
+#     browser.get(url)
+#     time.sleep(5)
+#     print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
+
+# import requests
+# url = 'http://httpbin.org/ip'
+# ip = '178.218.44.79:3128'
+# try:
+#     proxy = {'http': f'http://{ip}',
+#              'https': f'https://{ip}'
+#              }
+#     resp = requests.get(url, proxies=proxy)
+#     print(resp.json(), 'Success connection')
+# except Exception as _ex:
+#     print(ip, '--Not work')
+
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# proxy_list = ['46.47.197.210:3128', '178.218.44.79:3128', 
+# '95.66.138.21:8880', '109.194.22.61:8080', 
+# '45.8.211.113:80', '45.8.211.90:80', ]
+
+# for PROXY in proxy_list:
+#     try:
+#         chrome_options = webdriver.ChromeOptions()
+#         chrome_options.add_argument('--proxy-server=%s' % PROXY)
+#         chrome_options.add_argument('--ignore-ssl-errors')
+#         chrome_options.add_argument("--ignore-certificate-errors")
+#         url = 'https://2ip.ru'
+
+#         with webdriver.Chrome(options=chrome_options) as browser:
+#             browser.get(url)
+#             print(browser.find_element(By.ID, 'd_clip_button').find_element(By.TAG_NAME, 'span').text)
+
+#             browser.set_page_load_timeout(20)
+
+            
+#     except Exception as _ex:
+#         print(f"Превышен timeout ожидания для - {PROXY}")
+#         continue
