@@ -155,13 +155,42 @@
 
 # time.sleep(10)
 
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+# 5.4 Поиск элементов Selenium. Работаем с браузером
 
-with webdriver.Chrome() as driver:
-    driver.get('http://parsinger.ru/html/watch/1/1_1.html')
-    button = driver.find_element(By.ID, "sale_button")
-    time.sleep(2)
-    button.click()
-    time.sleep(2)
+# import time
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# driver= webdriver.Chrome()
+# driver.get('http://parsinger.ru/html/watch/1/1_1.html')
+# button = driver.find_element(By.ID, "sale_button")
+# time.sleep(2)
+# button.click()
+# time.sleep(2)
+# driver.quit()
+
+# import time
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+
+# try:
+#     driver= webdriver.Chrome()
+#     driver.get('http://parsinger.ru/html/watch/1/1_1.html')
+#     button = driver.find_element(By.ID, "sale_button")
+#     time.sleep(2)
+#     button.click()
+#     time.sleep(2)
+# finally:
+#     driver.quit()
+
+# import time
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# with webdriver.Chrome() as driver:
+#     driver.get('http://parsinger.ru/html/watch/1/1_1.html')
+#     button = driver.find_element(By.ID, "sale_button")
+#     time.sleep(2)
+#     button.click()
+#     time.sleep(2)
