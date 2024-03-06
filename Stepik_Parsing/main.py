@@ -194,3 +194,19 @@
 #     time.sleep(2)
 #     button.click()
 #     time.sleep(2)
+
+# 5.4.1 Мастер заполнения форм
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+with webdriver.Chrome() as browser:
+    browser.get('https://parsinger.ru/selenium/1/1.html')
+    data = ['Иванов', 'Иван', 'Иванович', '27', 'Н-ск', 'mail@mail.ru']
+    input_forms = browser.find_elements(By.CLASS_NAME, 'form')
+    for form, text in zip(input_forms, data):
+        form.send_keys(text)
+    browser.find_element(By.ID, 'btn').click()
+    time.sleep(10)
+    result = browser.find_element(By.ID, 'result').text
+print(result)
