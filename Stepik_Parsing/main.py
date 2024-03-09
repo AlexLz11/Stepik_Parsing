@@ -306,19 +306,29 @@
 # print(result)
 
 # 5.4.8 Миссия "Загадочный След"
-import time
-import sympy
+# import sympy
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'http://parsinger.ru/selenium/6/6.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     expr = browser.find_element(By.ID, 'text_box').text
+#     key = str(sympy.simplify(expr))
+#     browser.find_element(By.XPATH, f'//*[text()={key}]').click()
+#     browser.find_element(By.CLASS_NAME, 'btn').click()
+#     result = browser.find_element(By.ID, 'result').text
+#     print(result)
+
+# 5.5.1 Охота на Скрытые Сокровища
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-url = 'http://parsinger.ru/selenium/6/6.html'
+url = 'https://parsinger.ru/methods/1/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    expr = browser.find_element(By.ID, 'text_box').text
-    key = str(sympy.simplify(expr))
-    time.sleep(10)
-    b = browser.find_element(By.LINK_TEXT, 'Selenium')
-    print(b.text)
-    # a = browser.find_element(By.LINK_TEXT, key)
-    # time.sleep(10)
-    # print(a)
+    result = browser.find_element(By.ID, 'result').text
+    while result == 'refresh page':
+        browser.refresh()
+        result = browser.find_element(By.ID, 'result').text
+print(result)
