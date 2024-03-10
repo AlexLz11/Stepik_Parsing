@@ -321,14 +321,28 @@
 #     print(result)
 
 # 5.5.1 Охота на Скрытые Сокровища
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/methods/1/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     result = browser.find_element(By.ID, 'result').text
+#     while result == 'refresh page':
+#         browser.refresh()
+#         result = browser.find_element(By.ID, 'result').text
+# print(result)
+
+# 5.5.2 Операция "Чистый Лист"
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-url = 'https://parsinger.ru/methods/1/index.html'
+url = 'https://parsinger.ru/selenium/5.5/1/1.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    result = browser.find_element(By.ID, 'result').text
-    while result == 'refresh page':
-        browser.refresh()
-        result = browser.find_element(By.ID, 'result').text
+    for field in browser.find_elements(By.CLASS_NAME, 'text-field'):
+        field.clear()
+    browser.find_element(By.ID, 'checkButton').click()
+    alert = browser.switch_to.alert
+    result = alert.text
 print(result)
