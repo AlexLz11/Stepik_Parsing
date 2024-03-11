@@ -334,15 +334,49 @@
 # print(result)
 
 # 5.5.2 Операция "Чистый Лист"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/selenium/5.5/1/1.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for field in browser.find_elements(By.CLASS_NAME, 'text-field'):
+#         field.clear()
+#     browser.find_element(By.ID, 'checkButton').click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.5.3 Операция "Минное поле"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/selenium/5.5/2/1.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for field in browser.find_elements(By.CLASS_NAME, 'text-field'):
+#         if field.is_enabled():
+#             field.clear()
+#     browser.find_element(By.ID, 'checkButton').click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.5.4 Числовая Добыча: Операция 'Чекбокс'
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/selenium/5.5/3/1.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     fields = browser.find_elements(By.CLASS_NAME, 'parent')
+#     result = sum([int(i.find_element(By.TAG_NAME, 'textarea').text) for i in fields if i.find_element(By.CLASS_NAME, 'checkbox').is_selected()])
+# print(result)
+
+# 5.5.5 Операция "Цветовая Синхронизация"
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-url = 'https://parsinger.ru/selenium/5.5/1/1.html'
+url = 'https://parsinger.ru/selenium/5.5/4/1.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    for field in browser.find_elements(By.CLASS_NAME, 'text-field'):
-        field.clear()
-    browser.find_element(By.ID, 'checkButton').click()
-    alert = browser.switch_to.alert
-    result = alert.text
-print(result)
