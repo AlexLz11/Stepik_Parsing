@@ -374,9 +374,36 @@
 # print(result)
 
 # 5.5.5 Операция "Цветовая Синхронизация"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/selenium/5.5/4/1.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for i in browser.find_elements(By.CLASS_NAME, 'parent'):
+#         num = i.find_element(By.CSS_SELECTOR, '[color="gray"]')
+#         i.find_element(By.CSS_SELECTOR, '[color="blue"]').send_keys(num.text)
+#         num.clear()
+#         i.find_element(By.TAG_NAME, 'button').click()
+#     browser.find_element(By.ID, 'checkAll').click()
+#     result = browser.find_element(By.ID, 'congrats').text
+# print(result)
+
+# 5.5.6 Квест "Ад Цветовых Шифров"
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-url = 'https://parsinger.ru/selenium/5.5/4/1.html'
+url = 'https://parsinger.ru/selenium/5.5/5/1.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
+    for div in browser.find_elements(By.XPATH, '//div/div[@style]'):
+        color = div.find_element(By.TAG_NAME, 'span').text
+        div.find_element(By.XPATH, f'.//*[@value="{color}"]').click()
+        div.find_element(By.XPATH, f'.//button[@data-hex="{color}"]').click()
+        div.find_element(By.XPATH, './/input[@type="checkbox"]').click()
+        div.find_element(By.XPATH, './/input[@type="text"]').send_keys(color)
+        div.find_element(By.XPATH, './/button[text()="Проверить"]').click()
+    browser.find_element(By.XPATH, '//button[text()="Проверить все элементы"]').click()
+    alert = browser.switch_to.alert
+    result = alert.text
+print(result)
