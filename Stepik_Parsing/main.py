@@ -390,20 +390,39 @@
 # print(result)
 
 # 5.5.6 Квест "Ад Цветовых Шифров"
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
 
-url = 'https://parsinger.ru/selenium/5.5/5/1.html'
-with webdriver.Chrome() as browser:
-    browser.get(url)
-    for div in browser.find_elements(By.XPATH, '//div/div[@style]'):
-        color = div.find_element(By.TAG_NAME, 'span').text
-        div.find_element(By.XPATH, f'.//*[@value="{color}"]').click()
-        div.find_element(By.XPATH, f'.//button[@data-hex="{color}"]').click()
-        div.find_element(By.XPATH, './/input[@type="checkbox"]').click()
-        div.find_element(By.XPATH, './/input[@type="text"]').send_keys(color)
-        div.find_element(By.XPATH, './/button[text()="Проверить"]').click()
-    browser.find_element(By.XPATH, '//button[text()="Проверить все элементы"]').click()
-    alert = browser.switch_to.alert
-    result = alert.text
+# url = 'https://parsinger.ru/selenium/5.5/5/1.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for div in browser.find_elements(By.XPATH, '//div/div[@style]'):
+#         color = div.find_element(By.TAG_NAME, 'span').text
+#         div.find_element(By.XPATH, f'.//*[@value="{color}"]').click()
+#         div.find_element(By.XPATH, f'.//button[@data-hex="{color}"]').click()
+#         div.find_element(By.XPATH, './/input[@type="checkbox"]').click()
+#         div.find_element(By.XPATH, './/input[@type="text"]').send_keys(color)
+#         div.find_element(By.XPATH, './/button[text()="Проверить"]').click()
+#     browser.find_element(By.XPATH, '//button[text()="Проверить все элементы"]').click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.6 Cookies в Selenium
+# from pprint import pprint
+# from selenium import webdriver
+
+# with webdriver.Chrome() as webdriver:
+#     webdriver.get('https://ya.ru/')
+#     cookies = webdriver.get_cookies()
+#     pprint(cookies)
+
+# 5.6.1 Кодовое имя: "Секретные печеньки"
+from selenium import webdriver
+
+url = 'https://parsinger.ru/methods/3/index.html'
+with webdriver.Chrome() as webdriver:
+    webdriver.get(url)
+    cookies = webdriver.get_cookies()
+    result = sum([int(cookie['value']) for cookie in cookies if 'secret_cookie_' in cookie['name']])
 print(result)
