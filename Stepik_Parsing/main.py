@@ -418,11 +418,41 @@
 #     pprint(cookies)
 
 # 5.6.1 Кодовое имя: "Секретные печеньки"
-from selenium import webdriver
+# from selenium import webdriver
 
-url = 'https://parsinger.ru/methods/3/index.html'
+# url = 'https://parsinger.ru/methods/3/index.html'
+# with webdriver.Chrome() as webdriver:
+#     webdriver.get(url)
+#     cookies = webdriver.get_cookies()
+#     result = sum([int(cookie['value']) for cookie in cookies if 'secret_cookie_' in cookie['name']])
+# print(result)
+
+# 5.6.2 Кодовое имя: Следопыт Чётных Печеньек
+# from selenium import webdriver
+
+# def is_even_cookie(cookie):
+#     return int(cookie['name'].split('_')[-1]) % 2 == 0
+
+# url = 'https://parsinger.ru/methods/3/index.html'
+# with webdriver.Chrome() as webdriver:
+#     webdriver.get(url)
+#     cookies = webdriver.get_cookies()  
+#     total = sum([int(cookie['value']) for cookie in cookies if is_even_cookie(cookie)])
+# print(total)
+
+# 5.6.3 Кодовое имя: Операция "Бессмертный Печенюшка"
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+url = 'https://parsinger.ru/methods/5/index.html'
+cookie_info = []
 with webdriver.Chrome() as webdriver:
     webdriver.get(url)
-    cookies = webdriver.get_cookies()
-    result = sum([int(cookie['value']) for cookie in cookies if 'secret_cookie_' in cookie['name']])
-print(result)
+    for link in webdriver.find_elements(By.TAG_NAME, 'a'):
+        link.click()
+        cookie = webdriver.get_cookies()[0]
+        expiry = int(cookie['expiry'])
+        num = webdriver.find_element(By.ID, 'result').text
+        cookie_info.append((expiry, num))
+        webdriver.back()
+print(max(cookie_info)[1])
