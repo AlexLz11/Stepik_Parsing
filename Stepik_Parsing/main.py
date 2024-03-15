@@ -458,6 +458,7 @@
 # print(max(cookie_info)[1])
 
 # 5.6.4 Кодовое имя: Операция "Младший Виртуоз"
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -570,6 +571,12 @@ with webdriver.Chrome() as browser:
     for cookie in cookies:
         browser.add_cookie(cookie)
         browser.refresh()
-        age = int(browser.find_element(By.ID, 'age').text)
-        skills = len(browser.find_elements(By.ID, 'skillslist'))
+        time.sleep(0.5)
+        age = int(browser.find_element(By.ID, 'age').text.split()[1])
+        skills = len(browser.find_elements(By.TAG_NAME, 'li'))
         if age <= min_age and skills >= max_skills:
+            max_skills = skills
+            min_age = age
+            value = cookie['value']
+        browser.delete_all_cookies()
+print(value)
