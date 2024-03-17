@@ -600,19 +600,46 @@
 #         time.sleep(2)
 
 # 5.7.1 Кодовое имя: Операция "Освобождение Пути"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.common.exceptions import ElementClickInterceptedException 
+
+# url = 'http://parsinger.ru/scroll/4/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     result = 0
+#     for button in browser.find_elements(By.CLASS_NAME, 'btn'):
+#         try:
+#             button.click()
+#         except ElementClickInterceptedException:
+#             browser.execute_script("return arguments[0].scrollIntoView(true);", button)
+#             button.click()
+#         result += int(browser.find_element(By.ID, 'result').text)
+# print(result)
+
+# 5.7.2 Кодовое имя: "Космическая чистка урана"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+
+# url = 'https://parsinger.ru/selenium/5.7/1/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for button in browser.find_elements(By.CLASS_NAME, 'clickMe'):
+#         button.click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# Прокрутка содержимого страницы с помощью класса Keys
+import time
+from selenium.webdriver import Keys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import ElementClickInterceptedException 
 
-url = 'http://parsinger.ru/scroll/4/index.html'
 with webdriver.Chrome() as browser:
-    browser.get(url)
-    result = 0
-    for button in browser.find_elements(By.CLASS_NAME, 'btn'):
-        try:
-            button.click()
-        except ElementClickInterceptedException:
-            browser.execute_script("return arguments[0].scrollIntoView(true);", button)
-            button.click()
-        result += int(browser.find_element(By.ID, 'result').text)
-print(result)
+    browser.get('http://parsinger.ru/scroll/1/')
+    tags_input = browser.find_elements(By.TAG_NAME, 'input')
+
+    for input in tags_input:
+        input.send_keys(Keys.DOWN)
+        time.sleep(1)
