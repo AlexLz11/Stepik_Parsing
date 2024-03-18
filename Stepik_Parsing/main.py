@@ -631,15 +631,58 @@
 # print(result)
 
 # Прокрутка содержимого страницы с помощью класса Keys
-import time
-from selenium.webdriver import Keys
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+# import time
+# from selenium.webdriver import Keys
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
 
-with webdriver.Chrome() as browser:
-    browser.get('http://parsinger.ru/scroll/1/')
-    tags_input = browser.find_elements(By.TAG_NAME, 'input')
+# with webdriver.Chrome() as browser:
+#     browser.get('http://parsinger.ru/scroll/1/')
+#     tags_input = browser.find_elements(By.TAG_NAME, 'input')
 
-    for input in tags_input:
-        input.send_keys(Keys.DOWN)
-        time.sleep(1)
+#     for input in tags_input:
+#         input.send_keys(Keys.DOWN)
+#         time.sleep(1)
+
+# ActionChains(driver)(Цепочка действий)
+# Import 
+# from selenium.webdriver.common.action_chains import ActionChains
+
+
+# Использование ActionChains для выполнения последовательности действий
+
+# actions = ActionChains(driver) # Создаём экземпляр класса ActionChains
+# actions.move_to_element(menu)  # Переместить курсор на элемент меню
+# actions.click(submenu)         # Кликнуть по подменю
+# actions.perform()              # Выполнить накопленные действия
+
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.action_chains import ActionChains
+
+# # Инициализация драйвера
+# driver = webdriver.Chrome()
+
+# # Открыть веб-страницу (замените URL на ваш адрес)
+# driver.get("https://parsinger.ru/selenium/5.7/2/index.html")
+
+# # Найти элемент на странице с использованием локатора By
+# draggable = driver.find_element(By.ID, "draggable")
+
+# # Использование ActionChains для выполнения перетаскивания элемента
+# actions = ActionChains(driver)
+
+# # 1. Переместить блок влево на 100px
+# actions.drag_and_drop_by_offset(draggable, -100, 0).perform()
+
+# # 2. Переместить блок вниз на 100px
+# actions.drag_and_drop_by_offset(draggable, 0, 100).perform()
+
+# # 3. Переместить блок вправо на 100px
+# actions.drag_and_drop_by_offset(draggable, 100, 0).perform()
+
+# # 4. Переместить блок вверх на 100px
+# actions.drag_and_drop_by_offset(draggable, 0, -100).perform()
+
+# # Закрыть браузер после завершения
+# driver.quit()
