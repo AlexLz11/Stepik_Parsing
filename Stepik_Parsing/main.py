@@ -686,3 +686,19 @@
 
 # # Закрыть браузер после завершения
 # driver.quit()
+
+# 5.7.3 Операция 'Зелёный Лотос'
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.action_chains import ActionChains
+
+# url = 'https://parsinger.ru/selenium/5.7/5/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     actions = ActionChains(browser)
+#     for button in browser.find_elements(By.CLASS_NAME, 'timer_button'):
+#         hold_time = float(button.get_attribute('value'))
+#         actions.click_and_hold(button).pause(hold_time).release(button).perform()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
