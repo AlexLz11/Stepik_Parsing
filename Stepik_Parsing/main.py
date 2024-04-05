@@ -702,3 +702,21 @@
 #     alert = browser.switch_to.alert
 #     result = alert.text
 # print(result)
+
+# 5.7.4 Поиск чисел
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+
+# url = 'https://parsinger.ru/scroll/2/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     elems = browser.find_elements(by.CLASS_NAME, 'item')
+#     print(len(elems))
+#     nums = []
+#     for elem in elems:
+#         elem.find_element(by.XPATH, './input').click()
+#         if (num := elem.find_element(by.XPATH, './/span').text):
+#             nums.append(int(num))
+# result = sum(nums)
+# print(result)
+
