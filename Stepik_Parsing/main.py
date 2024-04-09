@@ -720,3 +720,21 @@
 # result = sum(nums)
 # print(result)
 
+# 5.7.5 Infinite scroll
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By as by
+
+url = 'http://parsinger.ru/infiniti_scroll_1/'
+with webdriver.Chrome() as browser:
+    browser.get(url)
+    div = browser.find_element(by.XPATH, '//div[@id="scroll-container"]/div')
+    lst_check = []
+    lst = [tag.get_attribute('id') for tag in browser.find_elements(by.TAG_NAME, 'span')]
+    while lst != lst_check:
+        ActionChains(browser).move_to_element(div).scroll_by_amount(0, 1000).perform()
+        lst = [tag.get_attribute('id') for tag in browser.find_elements(by.TAG_NAME, 'span')]
+        lst_check = lst[:]
+    result = [int(tag.text) for tag in browser.find_elements(by.TAG_NAME, 'span') if tag.text]
+    print(result)
+    print(lst_check)
