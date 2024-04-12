@@ -721,21 +721,94 @@
 # print(result)
 
 # 5.7.5 Infinite scroll
+# from selenium import webdriver
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.by import By as by
+
+# def check_last(lst):
+#     return not(any([tag.get_attribute('class') for tag in lst]))
+
+# url = 'http://parsinger.ru/infiniti_scroll_1/'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     div = browser.find_element(by.XPATH, '//div[@id="scroll-container"]/div')
+#     flag = True
+#     while flag:
+#         ActionChains(browser).move_to_element(div).scroll_by_amount(1, 1000).perform()
+#         flag = check_last(browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/span'))
+        
+#     result = sum([int(tag.text) for tag in browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/span')])
+# print(result)
+
+# 5.7.6 Десант в глубину: Поиск сокровищ среди скрытых элементов
+# from selenium import webdriver
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.by import By as by
+
+# def check_last(lst):
+#     return not(any([tag.get_attribute('class') for tag in lst]))
+
+# url = 'http://parsinger.ru/infiniti_scroll_2/'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     div = browser.find_element(by.XPATH, '//div[@id="scroll-container"]/div')
+#     flag = True
+#     while flag:
+#         ActionChains(browser).move_to_element(div).scroll_by_amount(1, 1000).perform()
+#         flag = check_last(browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/p'))
+        
+#     result = sum([int(tag.text) for tag in browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/p')])
+# print(result)
+
+# 5.7.7 Операция "Пятерка": Одновременный Глубокий Скроллинг
+# from selenium import webdriver
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.by import By as by
+
+# def check_last(lst):
+#     return not(any([tag.get_attribute('class') for tag in lst]))
+
+# url = 'http://parsinger.ru/infiniti_scroll_3/'
+# total = 0
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for i in range(5):
+#         path = f'//div[@id="scroll-container_{i + 1}"]'
+#         div = browser.find_element(by.XPATH, f'{path}/div')
+#         flag = True
+#         while flag:
+#             ActionChains(browser).move_to_element(div).scroll_by_amount(1, 1000).perform()
+#             flag = check_last(browser.find_elements(by.XPATH, f'{path}/span'))
+#         res = sum([int(tag.text) for tag in browser.find_elements(by.XPATH, f'{path}/span')])
+#         total += res
+# print(total)
+
+# 5.7.8 Чётный Выбор: Бесконечный Чекбоксовый список
+from time import sleep
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By as by
+from selenium.webdriver.common.action_chains import ActionChains
 
-def check_last(lst):
-    return not(any([tag.get_attribute('class') for tag in lst]))
-
-url = 'http://parsinger.ru/infiniti_scroll_1/'
+url = 'https://parsinger.ru/selenium/5.7/4/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    div = browser.find_element(by.XPATH, '//div[@id="scroll-container"]/div')
-    flag = True
-    while flag:
-        ActionChains(browser).move_to_element(div).scroll_by_amount(1, 1000).perform()
-        flag = check_last(browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/span'))
-        
-    result = sum([int(tag.text) for tag in browser.find_elements(by.XPATH, '//div[@id="scroll-container"]/span')])
-print(result)
+    containers = []
+    while len(containers) < 100:
+        containers = browser.find_elements(by.CSS_SELECTOR, 'div.child_container')
+        ActionChains(browser).scroll_to_element(containers[-1]).perform()
+    sleep(1)
+    print(len(containers))
+    ActionChains(browser).move_to_element(containers[0]).perform()
+    box = browser.find_element(by.TAG_NAME, 'input')
+    ActionChains(browser).move_to_element(box).click().perform()
+    sleep(5)
+
+#     print(len(browser.find_elements(by.TAG_NAME, 'input')))
+#     for box in browser.find_elements(by.TAG_NAME, 'input'):
+#         if int(box.get_attribute('value')) % 2 == 0:
+#             ActionChains(browser).move_to_element(box).click().perform()
+#     browser.find_element(by.CLASS_NAME, 'alert_button').click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+#     sleep(5)
+# print(result)
