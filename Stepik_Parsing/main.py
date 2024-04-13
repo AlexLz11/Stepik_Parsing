@@ -791,10 +791,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 
 chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--start-maximized")
+chrome_options.add_argument("force-device-scale-factor=0.75")
+chrome_options.add_argument("high-dpi-support=0.75")
 
 url = 'https://parsinger.ru/selenium/5.7/4/index.html'
 with webdriver.Chrome(options=chrome_options) as browser:
@@ -803,19 +803,13 @@ with webdriver.Chrome(options=chrome_options) as browser:
     while len(containers) < 100:
         containers = browser.find_elements(by.CSS_SELECTOR, 'div.child_container')
         ActionChains(browser).scroll_to_element(containers[-1]).perform()
-    sleep(1)
-    print(len(containers))
-    ActionChains(browser).move_to_element(containers[0]).perform()
-    box = browser.find_element(by.TAG_NAME, 'input')
-    ActionChains(browser).move_to_element(box).click(box).perform()
+    for container in containers:
+        ActionChains(browser).move_to_element(container).perform()
+        for box in container.find_elements(by.XPATH, './input'):
+            if int(box.get_attribute('value')) % 2 == 0:
+                ActionChains(browser).move_to_element(box).click(box).perform()
     sleep(5)
-
-#     print(len(browser.find_elements(by.TAG_NAME, 'input')))
-#     for box in browser.find_elements(by.TAG_NAME, 'input'):
-#         if int(box.get_attribute('value')) % 2 == 0:
-#             ActionChains(browser).move_to_element(box).click().perform()
-#     browser.find_element(by.CLASS_NAME, 'alert_button').click()
-#     alert = browser.switch_to.alert
-#     result = alert.text
-#     sleep(5)
-# print(result)
+    browser.find_element(by.CLASS_NAME, 'alert_button').click()
+    alert = browser.switch_to.alert
+    result = alert.text
+print(result)
