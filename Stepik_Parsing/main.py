@@ -788,9 +788,16 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.options import Options
+
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--disable-gpu')
 
 url = 'https://parsinger.ru/selenium/5.7/4/index.html'
-with webdriver.Chrome() as browser:
+with webdriver.Chrome(options=chrome_options) as browser:
     browser.get(url)
     containers = []
     while len(containers) < 100:
@@ -800,7 +807,7 @@ with webdriver.Chrome() as browser:
     print(len(containers))
     ActionChains(browser).move_to_element(containers[0]).perform()
     box = browser.find_element(by.TAG_NAME, 'input')
-    ActionChains(browser).move_to_element(box).click().perform()
+    ActionChains(browser).move_to_element(box).click(box).perform()
     sleep(5)
 
 #     print(len(browser.find_elements(by.TAG_NAME, 'input')))
