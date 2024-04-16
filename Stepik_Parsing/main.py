@@ -784,32 +784,76 @@
 # print(total)
 
 # 5.7.8 Чётный Выбор: Бесконечный Чекбоксовый список
-from time import sleep
+# from time import sleep
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_argument("--disable-extensions")
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+# chrome_options.add_argument("high-dpi-support=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.7/4/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     containers = []
+#     while len(containers) < 100:
+#         containers = browser.find_elements(by.CSS_SELECTOR, 'div.child_container')
+#         ActionChains(browser).scroll_to_element(containers[-1]).perform()
+#     for container in containers:
+#         ActionChains(browser).move_to_element(container).perform()
+#         for box in container.find_elements(by.XPATH, './input'):
+#             if int(box.get_attribute('value')) % 2 == 0:
+#                 ActionChains(browser).move_to_element(box).click(box).perform()
+#     sleep(5)
+#     browser.find_element(by.CLASS_NAME, 'alert_button').click()
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.8.1 Условие задачи: "Поиск секретного кода"
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# url = 'https://parsinger.ru/selenium/5.8/1/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for tag in browser.find_elements(by.CLASS_NAME, 'buttons'):
+#         tag.click()
+#         WebDriverWait(browser, 5).until(ec.alert_is_present())
+#         browser.switch_to.alert.accept()
+#         if (result := browser.find_element(by.ID, 'result').text):
+#             break
+# print(result)
+
+# 5.8.2 Поиск секретных пин-кодов
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
-chrome_options = Options()
-chrome_options.add_argument("--disable-extensions")
-chrome_options.add_argument("--start-maximized")
-chrome_options.add_argument("force-device-scale-factor=0.75")
-chrome_options.add_argument("high-dpi-support=0.75")
+def check_pin(pin):
+    browser.find_element(by.ID, 'input').send_keys(pin)
+    browser.find_element(by.ID, 'check').click()
+    check_result = browser.find_element(by.ID, 'result').text
+    if check_result == 'Неверный пин-код':
+        return None
+    return check_result
 
-url = 'https://parsinger.ru/selenium/5.7/4/index.html'
-with webdriver.Chrome(options=chrome_options) as browser:
+url = 'https://parsinger.ru/selenium/5.8/2/index.html'
+with webdriver.Chrome() as browser:
     browser.get(url)
-    containers = []
-    while len(containers) < 100:
-        containers = browser.find_elements(by.CSS_SELECTOR, 'div.child_container')
-        ActionChains(browser).scroll_to_element(containers[-1]).perform()
-    for container in containers:
-        ActionChains(browser).move_to_element(container).perform()
-        for box in container.find_elements(by.XPATH, './input'):
-            if int(box.get_attribute('value')) % 2 == 0:
-                ActionChains(browser).move_to_element(box).click(box).perform()
-    sleep(5)
-    browser.find_element(by.CLASS_NAME, 'alert_button').click()
-    alert = browser.switch_to.alert
-    result = alert.text
+    for button in browser.find_elements(by.CLASS_NAME, 'buttons'):
+        button.click()
+        WebDriverWait(browser, 5).until(ec.alert_is_present())
+        alert = browser.switch_to.alert
+        pin = alert.text
+        alert.accept()
+        if (result := check_pin(pin)):
+            break
 print(result)
