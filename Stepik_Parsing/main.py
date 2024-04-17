@@ -832,28 +832,60 @@
 # print(result)
 
 # 5.8.2 Поиск секретных пин-кодов
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+# from time import time
+
+# def check_pin(pin):
+#     browser.find_element(by.ID, 'input').send_keys(pin)
+#     browser.find_element(by.ID, 'check').click()
+#     check_result = browser.find_element(by.ID, 'result').text
+#     if check_result == 'Неверный пин-код':
+#         return None
+#     return check_result
+
+# url = 'https://parsinger.ru/selenium/5.8/2/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for button in browser.find_elements(by.CLASS_NAME, 'buttons'):
+#         button.click()
+#         tb = time()
+#         WebDriverWait(browser, 5).until(ec.alert_is_present())
+#         te = time()
+#         print(te - tb)
+#         alert = browser.switch_to.alert
+#         pin = alert.text
+#         alert.accept()
+#         if (result := check_pin(pin)):
+#             break
+# print(result)
+
+# 5.8.3 Секретный код: кибер-расследование
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 def check_pin(pin):
-    browser.find_element(by.ID, 'input').send_keys(pin)
-    browser.find_element(by.ID, 'check').click()
-    check_result = browser.find_element(by.ID, 'result').text
-    if check_result == 'Неверный пин-код':
+    button = browser.find_element(by.ID, 'check')
+    button.click()
+    WebDriverWait(browser, 5).until(ec.alert_is_present())
+    alert = browser.switch_to.alert
+    alert.send_keys(pin)
+    alert.accept()
+    result = browser.find_element(by.ID, 'result').text
+    if result == 'Неверный пин-код':
         return None
-    return check_result
+    return result
 
-url = 'https://parsinger.ru/selenium/5.8/2/index.html'
+url = 'https://parsinger.ru/selenium/5.8/3/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    for button in browser.find_elements(by.CLASS_NAME, 'buttons'):
-        button.click()
-        WebDriverWait(browser, 5).until(ec.alert_is_present())
-        alert = browser.switch_to.alert
-        pin = alert.text
-        alert.accept()
-        if (result := check_pin(pin)):
+    for span in browser.find_elements(by.CLASS_NAME, 'pin'):
+        pin = span.text
+        result = check_pin(pin)
+        if result:
+            print(result)
             break
-print(result)
