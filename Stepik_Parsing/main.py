@@ -791,6 +791,7 @@
 # from selenium.webdriver.chrome.options import Options
 
 # chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 # chrome_options.add_argument("--disable-extensions")
 # chrome_options.add_argument("--start-maximized")
 # chrome_options.add_argument("force-device-scale-factor=0.75")
@@ -863,29 +864,62 @@
 # print(result)
 
 # 5.8.3 Секретный код: кибер-расследование
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# def check_pin(pin):
+#     button = browser.find_element(by.ID, 'check')
+#     button.click()
+#     WebDriverWait(browser, 5).until(ec.alert_is_present())
+#     alert = browser.switch_to.alert
+#     alert.send_keys(pin)
+#     alert.accept()
+#     result = browser.find_element(by.ID, 'result').text
+#     if result == 'Неверный пин-код':
+#         return None
+#     return result
+
+# url = 'https://parsinger.ru/selenium/5.8/3/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for span in browser.find_elements(by.CLASS_NAME, 'pin'):
+#         pin = span.text
+#         result = check_pin(pin)
+#         if result:
+#             print(result)
+#             break
+
+# 5.8.4 Погружение во фреймы
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as ec
 
-def check_pin(pin):
-    button = browser.find_element(by.ID, 'check')
-    button.click()
-    WebDriverWait(browser, 5).until(ec.alert_is_present())
-    alert = browser.switch_to.alert
-    alert.send_keys(pin)
-    alert.accept()
-    result = browser.find_element(by.ID, 'result').text
-    if result == 'Неверный пин-код':
+def alert_check(iframe):
+    browser.switch_to.frame(iframe)
+    browser.find_element(by.TAG_NAME, 'button').click()
+    num = browser.find_element(by.ID, 'numberDisplay').text
+    browser.switch_to.default_content()
+    browser.find_element(by.ID, 'guessInput').clear()
+    browser.find_element(by.ID, 'guessInput').send_keys(num)
+    browser.find_element(by.ID, 'checkBtn').click()
+    try:
+        WebDriverWait(browser, 1).until(ec.alert_is_present())
+        alert = browser.switch_to.alert
+        alert_text = alert.text
+        alert.accept()
+        return alert_text
+    except TimeoutException:
         return None
-    return result
 
-url = 'https://parsinger.ru/selenium/5.8/3/index.html'
+url = 'https://parsinger.ru/selenium/5.8/5/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
-    for span in browser.find_elements(by.CLASS_NAME, 'pin'):
-        pin = span.text
-        result = check_pin(pin)
-        if result:
-            print(result)
+    for iframe in browser.find_elements(by.TAG_NAME, 'iframe'):
+        code = alert_check(iframe)
+        if code:
+            print(code)
             break
