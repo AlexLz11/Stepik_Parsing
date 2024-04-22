@@ -892,34 +892,83 @@
 #             break
 
 # 5.8.4 Погружение во фреймы
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.common.exceptions import TimeoutException
+# from selenium.webdriver.support import expected_conditions as ec
+
+# def alert_check(iframe):
+#     browser.switch_to.frame(iframe)
+#     browser.find_element(by.TAG_NAME, 'button').click()
+#     num = browser.find_element(by.ID, 'numberDisplay').text
+#     browser.switch_to.default_content()
+#     browser.find_element(by.ID, 'guessInput').clear()
+#     browser.find_element(by.ID, 'guessInput').send_keys(num)
+#     browser.find_element(by.ID, 'checkBtn').click()
+#     try:
+#         WebDriverWait(browser, 1).until(ec.alert_is_present())
+#         alert = browser.switch_to.alert
+#         alert_text = alert.text
+#         alert.accept()
+#         return alert_text
+#     except TimeoutException:
+#         return None
+
+# url = 'https://parsinger.ru/selenium/5.8/5/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for iframe in browser.find_elements(by.TAG_NAME, 'iframe'):
+#         code = alert_check(iframe)
+#         if code:
+#             print(code)
+#             break
+
+# 5.8.5 Размеры окна браузера
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from time import sleep
+
+# dx = 16 # 16px занимают боковые границы браузера: левая и правая.
+# dy = 133 # 133px занимает верхняя панель управления браузера и нижняя граница.
+# url = 'https://parsinger.ru/window_size/1/'
+# x, y = 553, 555+139+34
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     browser.set_window_size(x, y)
+#     print(browser.get_window_size())
+#     width = browser.find_element(by.ID, 'width').text
+#     height = browser.find_element(by.ID, 'height').text
+#     result = browser.find_element(by.ID, 'result').text
+#     sleep(10)
+# print(width, height, f'result = {result}', sep='\n')
+
+# 5.8.6 Поиск секретного сочетания размера окна
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.chrome.options import Options
 
-def alert_check(iframe):
-    browser.switch_to.frame(iframe)
-    browser.find_element(by.TAG_NAME, 'button').click()
-    num = browser.find_element(by.ID, 'numberDisplay').text
-    browser.switch_to.default_content()
-    browser.find_element(by.ID, 'guessInput').clear()
-    browser.find_element(by.ID, 'guessInput').send_keys(num)
-    browser.find_element(by.ID, 'checkBtn').click()
-    try:
-        WebDriverWait(browser, 1).until(ec.alert_is_present())
-        alert = browser.switch_to.alert
-        alert_text = alert.text
-        alert.accept()
-        return alert_text
-    except TimeoutException:
-        return None
+chrome_options = Options()
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--disable-extensions")
+# chrome_options.add_argument("--start-maximized")
+chrome_options.add_argument("force-device-scale-factor=0.8")
+chrome_options.add_argument("high-dpi-support=0.8")
 
-url = 'https://parsinger.ru/selenium/5.8/5/index.html'
-with webdriver.Chrome() as browser:
+window_size_x = [616, 648, 680, 701, 730, 750, 805, 820, 855, 890, 955, 1000]
+window_size_y = [300, 330, 340, 388, 400, 421, 474, 505, 557, 600, 653, 1000]
+url = 'http://parsinger.ru/window_size/2/index.html'
+result = ''
+with webdriver.Chrome(options=chrome_options) as browser:
     browser.get(url)
-    for iframe in browser.find_elements(by.TAG_NAME, 'iframe'):
-        code = alert_check(iframe)
-        if code:
-            print(code)
+    for x in window_size_x:
+        for y in window_size_y:
+            browser.set_window_size(x, y)
+            result = browser.find_element(by.ID, 'result').text
+            if result:
+                print(result)
+                break
+        if result:
             break
+    else:
+        print('No result')
