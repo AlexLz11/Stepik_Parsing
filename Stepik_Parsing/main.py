@@ -944,31 +944,125 @@
 # print(width, height, f'result = {result}', sep='\n')
 
 # 5.8.6 Поиск секретного сочетания размера окна
-from selenium import webdriver
-from selenium.webdriver.common.by import By as by
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.chrome.options import Options
 
-chrome_options = Options()
-chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
-# chrome_options.add_argument("--disable-extensions")
-# chrome_options.add_argument("--start-maximized")
-chrome_options.add_argument("force-device-scale-factor=0.8")
-chrome_options.add_argument("high-dpi-support=0.8")
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--no-sandbox')
+# chrome_options.add_argument('--disable-dev-shm-usage')
+# chrome_options.add_argument('--disable-gpu')
+# # chrome_options.add_argument("--disable-extensions")
+# # chrome_options.add_argument("--start-maximized")
+# # chrome_options.add_argument("force-device-scale-factor=0.8")
+# # chrome_options.add_argument("high-dpi-support=0.8")
 
-window_size_x = [616, 648, 680, 701, 730, 750, 805, 820, 855, 890, 955, 1000]
-window_size_y = [300, 330, 340, 388, 400, 421, 474, 505, 557, 600, 653, 1000]
-url = 'http://parsinger.ru/window_size/2/index.html'
-result = ''
-with webdriver.Chrome(options=chrome_options) as browser:
-    browser.get(url)
-    for x in window_size_x:
-        for y in window_size_y:
-            browser.set_window_size(x, y)
-            result = browser.find_element(by.ID, 'result').text
-            if result:
-                print(result)
-                break
-        if result:
-            break
-    else:
-        print('No result')
+# window_size_x = [616, 648, 680, 701, 730, 750, 805, 820, 855, 890, 955, 1000]
+# window_size_y = [300, 330, 340, 388, 400, 421, 474, 505, 557, 600, 653, 1000]
+# url = 'http://parsinger.ru/window_size/2/index.html'
+# result = ''
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     for x in window_size_x:
+#         for y in window_size_y:
+#             browser.set_window_size(x, y)
+#             result = browser.find_element(by.ID, 'result').text
+#             if result:
+#                 print(result)
+#                 break
+#         if result:
+#             break
+#     else:
+#         print('No result')
+
+# 5.8.7 Таинственные размеры окна
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--no-sandbox')
+# chrome_options.add_argument('--disable-dev-shm-usage')
+# chrome_options.add_argument('--disable-gpu')
+# # chrome_options.add_argument("--disable-extensions")
+# # chrome_options.add_argument("--start-maximized")
+# # chrome_options.add_argument("force-device-scale-factor=0.8")
+# # chrome_options.add_argument("high-dpi-support=0.8")
+
+# window_size_x = [516, 648, 680, 701, 730, 750, 805, 820, 855, 890, 955, 1000]
+# window_size_y = [270, 300, 340, 388, 400, 421, 474, 505, 557, 600, 653, 1000]
+# url = 'http://parsinger.ru/window_size/2/index.html'
+# result = ''
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     for x in window_size_x:
+#         for y in window_size_y:
+#             browser.set_window_size(x, y)
+#             width = int(browser.find_element(by.ID, 'width').text.split()[1])
+#             height = int(browser.find_element(by.ID, 'height').text.split()[1])
+#             size = {'width': width, 'height': height}
+#             result = browser.find_element(by.ID, 'result').text
+#             if result:
+#                 print(result, size, sep='\n')
+#                 print(browser.get_window_size())
+#                 break
+#         if result:
+#             break
+#     else:
+#         print('No result')
+
+# Вкладки в браузере
+# import time
+# from selenium import webdriver
+
+
+# with webdriver.Chrome() as browser:
+#     result = []
+#     browser.get('http://parsinger.ru/blank/2/1.html')
+#     time.sleep(1)
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/2.html", "_blank1");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/3.html", "_blank2");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/4.html", "_blank3");')
+#     time.sleep(2)
+#     print(browser.window_handles)
+
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By
+# from time import sleep
+
+# with webdriver.Chrome() as browser:
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/1.html", "_blank1");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/2.html", "_blank2");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/3.html", "_blank3");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/2/4.html", "_blank4");')
+
+#     for page in browser.window_handles:
+#         browser.switch_to.window(page)
+#         sleep(5)
+#         for y in browser.find_elements(By.CLASS_NAME, 'check'):
+#             y.click()
+
+# import time
+# from selenium import webdriver
+# with webdriver.Chrome() as browser:
+#     time.sleep(1)
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/1.html", "_blank1");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/2.html", "_blank2");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/3.html", "_blank3");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/4.html", "_blank4");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/5.html", "_blank5");')
+#     browser.execute_script('window.open("http://parsinger.ru/blank/0/6.html", "_blank6");')
+
+#     for page in browser.window_handles:
+#         browser.switch_to.window(page)
+#         time.sleep(1)
+#         print(browser.execute_script("return document.title;"), page)
+
+# from selenium import webdriver
+# with webdriver.Chrome() as browser:
+#     browser.get("https://stepik.org/course/104774/promo")
+#     print(browser.execute_script("return document.title;"))
