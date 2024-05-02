@@ -1066,3 +1066,41 @@
 # with webdriver.Chrome() as browser:
 #     browser.get("https://stepik.org/course/104774/promo")
 #     print(browser.execute_script("return document.title;"))
+
+# 5.8.8 Охотник за загадочными числами
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+
+# url = 'http://parsinger.ru/blank/3/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     total = 0
+#     for button in browser.find_elements(by.CLASS_NAME, 'buttons'):
+#         button.click()
+#     current_page = browser.current_window_handle
+#     pages = browser.window_handles
+#     pages.remove(current_page)
+#     for page in pages:
+#         browser.switch_to.window(page)
+#         total += int(browser.execute_script('return document.title;'))
+# print(total)
+
+# 5.8.9 Откройте сокровища интернета
+from selenium import webdriver
+from selenium.webdriver.common.by import By as by
+from math import sqrt
+
+sites = ['http://parsinger.ru/blank/1/1.html', 'http://parsinger.ru/blank/1/2.html', 'http://parsinger.ru/blank/1/3.html',
+         'http://parsinger.ru/blank/1/4.html', 'http://parsinger.ru/blank/1/5.html', 'http://parsinger.ru/blank/1/6.html']
+nums = []
+with webdriver.Chrome() as browser:
+    browser.get(sites[0])
+    for site in sites[1:]:
+        browser.execute_script(f'window.open("{site}", "_blank");')
+    for page in browser.window_handles:
+        browser.switch_to.window(page)
+        browser.find_element(by.CLASS_NAME, 'checkbox_class').click()
+        nums.append(int(browser.find_element(by.ID, 'result').text))
+result = round(sum(map(sqrt, nums)), 9)
+print(result)
+
