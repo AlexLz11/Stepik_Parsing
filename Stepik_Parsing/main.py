@@ -1086,21 +1086,41 @@
 # print(total)
 
 # 5.8.9 Откройте сокровища интернета
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from math import sqrt
+
+# sites = ['http://parsinger.ru/blank/1/1.html', 'http://parsinger.ru/blank/1/2.html', 'http://parsinger.ru/blank/1/3.html',
+#          'http://parsinger.ru/blank/1/4.html', 'http://parsinger.ru/blank/1/5.html', 'http://parsinger.ru/blank/1/6.html']
+# nums = []
+# with webdriver.Chrome() as browser:
+#     browser.get(sites[0])
+#     for site in sites[1:]:
+#         browser.execute_script(f'window.open("{site}", "_blank");')
+#     for page in browser.window_handles:
+#         browser.switch_to.window(page)
+#         browser.find_element(by.CLASS_NAME, 'checkbox_class').click()
+#         nums.append(int(browser.find_element(by.ID, 'result').text))
+# result = round(sum(map(sqrt, nums)), 9)
+# print(result)
+
+# 5.9.1 Ожидание title
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
-from math import sqrt
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from time import sleep
 
-sites = ['http://parsinger.ru/blank/1/1.html', 'http://parsinger.ru/blank/1/2.html', 'http://parsinger.ru/blank/1/3.html',
-         'http://parsinger.ru/blank/1/4.html', 'http://parsinger.ru/blank/1/5.html', 'http://parsinger.ru/blank/1/6.html']
-nums = []
+url1 = 'https://parsinger.ru/expectations/3/index.html'
+url2 = 'https://stepik.org/lesson/715955/step/5?auth=login&unit=716749'
 with webdriver.Chrome() as browser:
-    browser.get(sites[0])
-    for site in sites[1:]:
-        browser.execute_script(f'window.open("{site}", "_blank");')
-    for page in browser.window_handles:
-        browser.switch_to.window(page)
-        browser.find_element(by.CLASS_NAME, 'checkbox_class').click()
-        nums.append(int(browser.find_element(by.ID, 'result').text))
-result = round(sum(map(sqrt, nums)), 9)
+    browser.get(url1)
+    WebDriverWait(browser, 10).until(ec.element_to_be_clickable((by.ID, 'btn'))).click()
+    WebDriverWait(browser, 20).until(ec.title_is('345FDG3245SFD'))
+    result = browser.find_element(by.ID, 'result').text
 print(result)
-
+    # browser.get(url2)
+    # sleep(10)
+    # browser.find_element(by.XPATH, '//input[@placeholder="Введите число"]').send_keys(result)
+    # WebDriverWait(browser, 10).until(ec.element_to_be_clickable((by.XPATH, '//button[@class="submit-submission"]'))).click()
+    # sleep(20)
