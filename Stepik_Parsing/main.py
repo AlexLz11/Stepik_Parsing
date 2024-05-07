@@ -1105,22 +1105,49 @@
 # print(result)
 
 # 5.9.1 Ожидание title
-from selenium import webdriver
-from selenium.webdriver.common.by import By as by
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-from time import sleep
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+# from time import sleep
 
-url1 = 'https://parsinger.ru/expectations/3/index.html'
-url2 = 'https://stepik.org/lesson/715955/step/5?auth=login&unit=716749'
-with webdriver.Chrome() as browser:
-    browser.get(url1)
-    WebDriverWait(browser, 10).until(ec.element_to_be_clickable((by.ID, 'btn'))).click()
-    WebDriverWait(browser, 20).until(ec.title_is('345FDG3245SFD'))
-    result = browser.find_element(by.ID, 'result').text
-print(result)
+# url1 = 'https://parsinger.ru/expectations/3/index.html'
+# url2 = 'https://stepik.org/lesson/715955/step/5?auth=login&unit=716749'
+# with webdriver.Chrome() as browser:
+#     browser.get(url1)
+#     WebDriverWait(browser, 10).until(ec.element_to_be_clickable((by.ID, 'btn'))).click()
+#     WebDriverWait(browser, 20).until(ec.title_is('345FDG3245SFD'))
+#     result = browser.find_element(by.ID, 'result').text
+# print(result)
     # browser.get(url2)
     # sleep(10)
     # browser.find_element(by.XPATH, '//input[@placeholder="Введите число"]').send_keys(result)
     # WebDriverWait(browser, 10).until(ec.element_to_be_clickable((by.XPATH, '//button[@class="submit-submission"]'))).click()
     # sleep(20)
+
+# 5.9.2 Тайный заголовок
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# url = 'https://parsinger.ru/expectations/4/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     WebDriverWait(browser, 5).until(ec.element_to_be_clickable((by.ID, 'btn'))).click()
+#     if WebDriverWait(browser, 20, 0.1).until(ec.title_contains('JK8HQ')):
+#         title = browser.title
+#         print(title)
+
+# 5.9.3 Мимолётные теги
+from selenium import webdriver
+from selenium.webdriver.common.by import By as by
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+url = 'https://parsinger.ru/expectations/6/index.html'
+with webdriver.Chrome() as browser:
+    browser.get(url)
+    browser.find_element(by.ID, 'btn').click()
+    element = WebDriverWait(browser, 20).until(ec.presence_of_element_located((by.CLASS_NAME, 'BMH21YY')))
+    print(element.text)
