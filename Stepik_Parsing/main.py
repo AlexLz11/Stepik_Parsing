@@ -1140,14 +1140,92 @@
 #         print(title)
 
 # 5.9.3 Мимолётные теги
-from selenium import webdriver
-from selenium.webdriver.common.by import By as by
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
 
-url = 'https://parsinger.ru/expectations/6/index.html'
-with webdriver.Chrome() as browser:
-    browser.get(url)
-    browser.find_element(by.ID, 'btn').click()
-    element = WebDriverWait(browser, 20).until(ec.presence_of_element_located((by.CLASS_NAME, 'BMH21YY')))
-    print(element.text)
+# url = 'https://parsinger.ru/expectations/6/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     browser.find_element(by.ID, 'btn').click()
+#     element = WebDriverWait(browser, 20).until(ec.presence_of_element_located((by.CLASS_NAME, 'BMH21YY')))
+#     print(element.text)
+
+# 5.9.4 Охота на таинственный Блок
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# url = 'https://parsinger.ru/selenium/5.9/2/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     WebDriverWait(browser, 30).until(ec.presence_of_element_located((by.ID, 'qQm9y1rk'))).click()
+#     WebDriverWait(browser, 5).until(ec.alert_is_present())
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.9.5 Познание атрибута display
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# url = 'https://parsinger.ru/selenium/5.9/3/index.html'
+# ids_to_find = ['xhkVEkgm', 'QCg2vOX7', '8KvuO5ja', 'CFoCZ3Ze', '8CiPCnNB', 'XuEMunrz', 'vmlzQ3gH', 'axhUiw2I','jolHZqD1', 'ZM6Ms3tw', '25a2X14r', 'aOSMX9tb', 'YySk7Ze3', 'QQK13iyY', 'j7kD7uIR']
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for iid in ids_to_find:
+#         WebDriverWait(browser, 100).until(ec.visibility_of_element_located((by.ID, iid))).click()
+#     WebDriverWait(browser, 5).until(ec.alert_is_present())
+#     alert = browser.switch_to.alert
+#     result = alert.text
+# print(result)
+
+# 5.9.6 Триумф над рекламным Заговором
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.9/4/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     browser.find_element(by.CLASS_NAME, 'close').click()
+#     WebDriverWait(browser, 30).until(ec.invisibility_of_element_located((by.ID, 'ad')))
+#     browser.find_element(by.TAG_NAME, 'button').click()
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.9.7 Коллекционер секретных рун
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+# from time import sleep
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.9/5/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     boxes = browser.find_elements(by.CLASS_NAME, 'box_button')
+#     for box in boxes:
+#         WebDriverWait(browser, 30).until(ec.element_to_be_clickable(box)).click()
+#         browser.find_element(by.ID, 'close_ad').click()
+#         WebDriverWait(browser, 30).until(ec.invisibility_of_element_located((by.ID, 'ad_window')))
+#         sleep(10)
+#     code = '-'.join([box.text for box in boxes])
+# print(code)
