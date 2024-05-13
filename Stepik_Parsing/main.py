@@ -1229,3 +1229,27 @@
 #         sleep(10)
 #     code = '-'.join([box.text for box in boxes])
 # print(code)
+
+# 5.9.8 Мерцающий Чек Бокс Мистерии
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
+
+# url = 'https://parsinger.ru/selenium/5.9/6/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     WebDriverWait(browser, 30).until(ec.element_located_to_be_selected((by.ID, 'myCheckbox')))
+#     browser.find_element(by.XPATH, '//button[text()="Проверить"]').click()
+#     result = browser.find_element(by.ID, 'result').text
+# print(result)
+
+# 5.9.9 Гирлянда чекбоксов
+from selenium import webdriver
+from selenium.webdriver.common.by import By as by
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+
+url = 'https://parsinger.ru/selenium/5.9/7/index.html'
+with webdriver.Chrome() as browser:
+    browser.get(url)
