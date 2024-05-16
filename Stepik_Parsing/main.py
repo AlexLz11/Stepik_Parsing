@@ -1245,11 +1245,18 @@
 # print(result)
 
 # 5.9.9 Гирлянда чекбоксов
-from selenium import webdriver
-from selenium.webdriver.common.by import By as by
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as ec
 
-url = 'https://parsinger.ru/selenium/5.9/7/index.html'
-with webdriver.Chrome() as browser:
-    browser.get(url)
+# url = 'https://parsinger.ru/selenium/5.9/7/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     for container in browser.find_elements(by.CLASS_NAME, 'container'):
+#         checkbox = container.find_element(by.XPATH, './/input')
+#         button = container.find_element(by.XPATH, './/button')
+#         WebDriverWait(browser, 30).until(ec.element_to_be_selected(checkbox))
+#         button.click()
+#     result = browser.find_element(by.ID, 'result').text
+# print(result)
