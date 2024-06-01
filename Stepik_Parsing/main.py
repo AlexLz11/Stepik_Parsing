@@ -1375,19 +1375,39 @@
 #     # Даем время для визуальной проверки (по желанию)
 #     time.sleep(5)
 
-# 5.10.1 Перемещение красного блока и поиск секретного токена
+# 5.10.2 Перемещение красного блока и поиск секретного токена
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+
+# url = 'https://parsinger.ru/draganddrop/1/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     sleep(3)
+#     elem1 = browser.find_element(by.ID, 'field1')
+#     elem2 = browser.find_element(by.ID, 'field2')
+#     ActionChains(browser).drag_and_drop(elem1, elem2).perform()
+#     result = browser.find_element(by.ID, 'result').text
+#     sleep(5)
+# print(result)
+
+# 5.10.3 Путешествие квадрата и проверочные точки
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
 
-url = 'https://parsinger.ru/draganddrop/1/index.html'
+url = 'https://parsinger.ru/draganddrop/3/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
     sleep(3)
-    elem1 = browser.find_element(by.ID, 'field1')
-    elem2 = browser.find_element(by.ID, 'field2')
-    ActionChains(browser).drag_and_drop(elem1, elem2).perform()
-    result = browser.find_element(by.ID, 'result').text
-    sleep(5)
+    block = browser.find_element(by.ID, 'block1')
+    actions = ActionChains(browser).click_and_hold(block)
+    for point in browser.find_elements(by.CLASS_NAME, 'controlPoint'):
+        actions.move_to_element(point)
+    actions.release().move_by_offset(10,10)
+    actions.perform()
+    sleep(3)
+    result = browser.find_element(by.ID, 'message').text
 print(result)
