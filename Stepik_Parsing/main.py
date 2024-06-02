@@ -1393,21 +1393,66 @@
 # print(result)
 
 # 5.10.3 Путешествие квадрата и проверочные точки
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+
+# url = 'https://parsinger.ru/draganddrop/3/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     sleep(3)
+#     block = browser.find_element(by.ID, 'block1')
+#     actions = ActionChains(browser).click_and_hold(block)
+#     for point in browser.find_elements(by.CLASS_NAME, 'controlPoint'):
+#         actions.move_to_element(point)
+#     actions.release().move_by_offset(10,10)
+#     actions.perform()
+#     sleep(3)
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.10.4 Движение зелёных квадратов
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+
+# url = 'https://parsinger.ru/selenium/5.10/2/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     sleep(3)
+#     target = browser.find_element(by.CLASS_NAME, 'draganddrop_end')
+#     for i in range(1, 11):
+#         block = browser.find_element(by.ID, f'draganddrop{i}')
+#         ActionChains(browser).drag_and_drop(block, target).perform()
+#         sleep(1)
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.10.5 Путешествие квадрата
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+
+# url = 'https://parsinger.ru/draganddrop/2/index.html'
+# with webdriver.Chrome() as browser:
+#     browser.get(url)
+#     sleep(3)
+#     block = browser.find_element(by.ID, 'draggable')
+#     for target in browser.find_elements(by.CLASS_NAME, 'box'):
+#         ActionChains(browser).drag_and_drop(block, target).perform()
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.10.6 Найдите пару
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
 
-url = 'https://parsinger.ru/draganddrop/3/index.html'
+url = 'https://parsinger.ru/selenium/5.10/3/index.html'
 with webdriver.Chrome() as browser:
     browser.get(url)
     sleep(3)
-    block = browser.find_element(by.ID, 'block1')
-    actions = ActionChains(browser).click_and_hold(block)
-    for point in browser.find_elements(by.CLASS_NAME, 'controlPoint'):
-        actions.move_to_element(point)
-    actions.release().move_by_offset(10,10)
-    actions.perform()
-    sleep(3)
-    result = browser.find_element(by.ID, 'message').text
-print(result)
