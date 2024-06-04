@@ -1447,12 +1447,42 @@
 # print(result)
 
 # 5.10.6 Найдите пару
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.10/3/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     sleep(3)
+#     tags = browser.find_elements(by.XPATH, '//div[@id="main_container"]/div')
+#     elem_pairs = [(tags[i], tags[i+1]) for i in range(0, len(tags), 2)]
+#     for element, target in elem_pairs:
+#         ActionChains(browser).drag_and_drop(element, target).perform()
+#         sleep(1)
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.10.7 Автоматическая сортировка шариков
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
+from selenium.webdriver.chrome.options import Options
 
-url = 'https://parsinger.ru/selenium/5.10/3/index.html'
-with webdriver.Chrome() as browser:
+chrome_options = Options()
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+chrome_options.add_argument("--start-maximized")
+chrome_options.add_argument("force-device-scale-factor=0.75")
+
+url = 'https://stepik.org/lesson/897512/step/11?unit=902579'
+with webdriver.Chrome(options=chrome_options) as browser:
     browser.get(url)
     sleep(3)
