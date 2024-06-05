@@ -1471,9 +1471,61 @@
 # print(result)
 
 # 5.10.7 Автоматическая сортировка шариков
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.10/4/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     sleep(3)
+#     baskets = {basket.get_attribute('class').split()[1]: basket for basket in browser.find_elements(by.CSS_SELECTOR, '.basket_color')}
+#     for ball in browser.find_elements(by.CSS_SELECTOR, '.ball_color'):
+#         color = ball.get_attribute('class').split()[1].split('_')[0]
+#         ActionChains(browser).drag_and_drop(ball, baskets[color]).perform()
+#         sleep(1)
+#     result = browser.find_element(by.CLASS_NAME, 'message').text
+# print(result)
+
+# 5.10.8 Бросок на правильное расстояние
+# from selenium import webdriver
+# from selenium.webdriver.common.by import By as by
+# from selenium.webdriver.common.action_chains import ActionChains
+# from time import sleep
+# from selenium.webdriver.chrome.options import Options
+
+# chrome_options = Options()
+# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_argument("--start-maximized")
+# chrome_options.add_argument("force-device-scale-factor=0.75")
+
+# url = 'https://parsinger.ru/selenium/5.10/8/index.html'
+# with webdriver.Chrome(options=chrome_options) as browser:
+#     browser.get(url)
+#     sleep(3)
+#     dc = {}
+#     ranges = [p.text for p in browser.find_elements(by.XPATH, '//div[@id="main_container"]/div/p')]
+#     for r in ranges:
+#         key = r.split(': ')[0].split('_')[1]
+#         val = int(r.split(': ')[1].strip('px'))
+#         dc[key] = val
+#     for piece in browser.find_elements(by.CSS_SELECTOR, '.piece'):
+#         rng = piece.get_attribute('id').split('_')[1]
+#         ActionChains(browser).drag_and_drop_by_offset(piece, dc[rng], 0).perform()
+#     result = browser.find_element(by.ID, 'message').text
+# print(result)
+
+# 5.10.9 Движение слайдеров и тайный Код
 from selenium import webdriver
 from selenium.webdriver.common.by import By as by
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from time import sleep
 from selenium.webdriver.chrome.options import Options
 
@@ -1482,7 +1534,19 @@ chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument("force-device-scale-factor=0.75")
 
-url = 'https://stepik.org/lesson/897512/step/11?unit=902579'
+url = 'https://parsinger.ru/selenium/5.10/6/index.html'
 with webdriver.Chrome(options=chrome_options) as browser:
     browser.get(url)
     sleep(3)
+    for container in browser.find_elements(by.CLASS_NAME, 'slider-container'):
+        slider = container.find_element(by.XPATH, './input')
+        current_val = int(slider.get_attribute('value'))
+        target_val = int(container.find_element(by.XPATH, './span[@class="target-value"]').text)
+        while current_val != target_val:
+            if target_val > current_val:
+                slider.send_keys(Keys.ARROW_RIGHT)
+            else:
+                slider.send_keys(Keys.ARROW_LEFT)
+            current_val = int(slider.get_attribute('value'))
+    result = browser.find_element(by.ID, 'message').text
+print(result)
