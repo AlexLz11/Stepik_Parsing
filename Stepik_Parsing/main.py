@@ -58,18 +58,27 @@
 # asyncio.run(main())
 
 import asyncio
-
-async def two():
-    await asyncio.sleep(1)
-    print('world')
-
+import random
+import time
 
 async def one():
-    print('hello')
-    task2 = asyncio.create_task(two())
-    await asyncio.sleep(5)
-    # await task2
-    print('end!')
+    # Получаем текущее время в секундах с начала эпохи. 
+    start = time.time()
+    await asyncio.sleep((sleep_time := random.randint(1, 3)))
+    # Получаем имя текущей задачи и выводим сообщение с временем ее выполнения:
+    print(f'{asyncio.current_task().get_name()} ({sleep_time=}) выполнена за {time.time() - start}')
 
+async def main():
+    # Создание списка задач.
+    lst_tasks = []
+    for x in range(10):
+        # Корутины должны быть явно обернуты в Task.
+        task = asyncio.create_task(one(), name=f'Задача_{x}')
+        lst_tasks.append(task)
+    done, pending = await asyncio.wait(lst_tasks, timeout=2)
+    print(f'Не успели выполниться: {[task.get_name() for task in pending]}')
+    print(done, pending, sep='\n')
+    # Даем время выполниться оставшимся задачам
+    await asyncio.sleep(3)
 
-asyncio.run(one())
+asyncio.run(main())
