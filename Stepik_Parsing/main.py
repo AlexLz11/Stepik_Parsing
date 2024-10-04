@@ -109,46 +109,71 @@
 
 # asyncio.run(main())
 
-import time
-import aiohttp
-import asyncio
-import aiofiles
+# import time
+# import aiohttp
+# import asyncio
+# import aiofiles
 
-url = 'http://httpbin.org/ip'
-
-
-async def check_proxy(prx, semaphore):
-    proxy = f'http://{prx}'
-    async with semaphore:
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url=url, proxy=proxy, timeout=1) as response:
-                    if response.ok:
-                        return f'good proxy, status_code: {response.status}, {prx}'
-                    else:
-                        return f'bad proxy, status_code: {response.status}, {prx}'
-        except Exception as e:
-            return f'bad proxy, Error: {e.__class__.__name__}, {prx}'
+# url = 'http://httpbin.org/ip'
 
 
-async def main():
-    # Внимание! Этот оператор ограничивает количество одновременно выполняемых задач
-    # Если код падает с ошибкой ValueError: too many file descriptors in select(), 
-    # уменьшите это число
-    semaphore = asyncio.BoundedSemaphore(500)
-
-    async with aiofiles.open('Stepik_Parsing/proxy1.txt', mode='r', encoding='utf8') as f:
-        # Получаем список прокси из файла
-        proxies = await f.readlines()
-        # Создаем и асинхронно запускаем список задач на проверку прокси
-        tasks = [check_proxy(prx.strip(), semaphore) for prx in proxies]
-        # Ждем, пока выполнятся все проверки
-        result = await asyncio.gather(*tasks, return_exceptions=True)
-        # Выводим результат проверки
-        print(f"Всего проверено: {len(result)} шт.")
-        print(*result, sep='\n')
+# async def check_proxy(prx, semaphore):
+#     proxy = f'http://{prx}'
+#     async with semaphore:
+#         try:
+#             async with aiohttp.ClientSession() as session:
+#                 async with session.get(url=url, proxy=proxy, timeout=1) as response:
+#                     if response.ok:
+#                         return f'good proxy, status_code: {response.status}, {prx}'
+#                     else:
+#                         return f'bad proxy, status_code: {response.status}, {prx}'
+#         except Exception as e:
+#             return f'bad proxy, Error: {e.__class__.__name__}, {prx}'
 
 
-start = time.time()
-asyncio.run(main())
-print(f'Затрачено времени: {time.time() - start} секунд')
+# async def main():
+#     # Внимание! Этот оператор ограничивает количество одновременно выполняемых задач
+#     # Если код падает с ошибкой ValueError: too many file descriptors in select(), 
+#     # уменьшите это число
+#     semaphore = asyncio.BoundedSemaphore(500)
+
+#     async with aiofiles.open('Stepik_Parsing/proxy1.txt', mode='r', encoding='utf8') as f:
+#         # Получаем список прокси из файла
+#         proxies = await f.readlines()
+#         # Создаем и асинхронно запускаем список задач на проверку прокси
+#         tasks = [check_proxy(prx.strip(), semaphore) for prx in proxies]
+#         # Ждем, пока выполнятся все проверки
+#         result = await asyncio.gather(*tasks, return_exceptions=True)
+#         # Выводим результат проверки
+#         print(f"Всего проверено: {len(result)} шт.")
+#         print(*result, sep='\n')
+
+
+# start = time.time()
+# asyncio.run(main())
+# print(f'Затрачено времени: {time.time() - start} секунд')
+
+# import aiohttp
+# import asyncio
+# from aiohttp_socks import ProxyConnector, ProxyType
+
+
+# async def main():
+#     timeout = aiohttp.ClientTimeout(total=1)
+#     url = 'http://httpbin.org/ip'
+#     connector = ProxyConnector(
+#             proxy_type=ProxyType.SOCKS5,
+#             host='92.204.135.37',
+#             port=2287,
+#             rdns=True
+#             )
+
+#     async with aiohttp.ClientSession(connector=connector, timeout=timeout, trust_env=True) as session:
+#         async with session.get(url=url, timeout=1) as response:
+#             if response.status:
+#                 print(f'good proxy, status_code -{response.status}-', end='')
+#             elif response.status >= 400:
+#                 print(f'bad proxy, status_code -{response.status}-', end='')
+
+# asyncio.run(main())
+
