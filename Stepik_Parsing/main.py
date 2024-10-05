@@ -177,3 +177,178 @@
 
 # asyncio.run(main())
 
+# ****************************************
+# **** 6.8 Приготовление асинхронного супа
+# ****************************************
+
+# ПРИМЕР 1
+# *************
+
+# import aiohttp
+# import asyncio
+# from bs4 import BeautifulSoup
+
+
+# async def main():
+#     url = 'https://parsinger.ru/html/index1_page_1.html'
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url=url, timeout=1) as response:
+#             soup = BeautifulSoup(await response.text(), 'lxml')
+#             name = soup.find_all('a', class_='name_item')
+#             price = soup.find_all('p', class_='price')
+#             for n, p in zip(name, price):
+#                 print(n.text, p.text)
+
+# asyncio.run(main())
+
+# ПРИМЕР 2 асинхр (время вып 0.9504497051239014 сек)
+# *************
+
+# import asyncio
+# import time
+# import aiohttp
+# from bs4 import BeautifulSoup
+
+# # ---------------------start block 1------------------------
+# category = ['watch', 'mobile', 'mouse', 'hdd', 'headphones']
+# urls = [f'https://parsinger.ru/html/{cat}/{i}/{i}_{x}.html' for cat, i in zip(category, range(1, len(category) + 1)) for
+#         x in range(1, 33)]
+# # ---------------------end block 1------------------------
+
+# # ---------------------start block 2------------------------
+# async def run_tasks(url, session):
+#     async with session.get(url) as resp:
+#         soup = BeautifulSoup(await resp.text(), 'lxml')
+#         price = soup.find('span', id='price').text
+#         name = soup.find('p', id='p_header').text
+#         print(resp.url, price, name)
+# # ---------------------end block 2------------------------
+
+# # ---------------------start block 3------------------------
+# async def main():
+#     async with aiohttp.ClientSession() as session:
+#         tasks = [run_tasks(link, session) for link in urls]
+#         await asyncio.gather(*tasks)
+# # ---------------------end block 3------------------------
+
+# # ---------------------start block 4------------------------
+
+# if __name__ == '__main__':
+#     start = time.time()
+#     asyncio.run(main())
+#     print(time.time()-start)
+
+# ПРИМЕР 2 синхр (время вып 22.20810580253601 сек)
+# *************
+
+# import time
+# import requests as r
+# from bs4 import BeautifulSoup
+
+# # ---------------------start block 1------------------------
+# category = ['watch', 'mobile', 'mouse', 'hdd', 'headphones']
+# urls = [f'https://parsinger.ru/html/{cat}/{i}/{i}_{x}.html' for cat, i in zip(category, range(1, len(category) + 1)) for
+#         x in range(1, 33)]
+# # ---------------------end block 1------------------------
+
+# # ---------------------start block 2------------------------
+# def run_tasks(url, session):
+#     with session.get(url) as resp:
+#         resp.encoding = 'utf-8'
+#         soup = BeautifulSoup(resp.text, 'lxml')
+#         price = soup.find('span', id='price').text
+#         name = soup.find('p', id='p_header').text
+#         print(resp.url, price, name)
+# # ---------------------end block 2------------------------
+
+# # ---------------------start block 3------------------------
+# start = time.time()
+# with r.Session() as session:
+#     for link in urls:
+#         run_tasks(link, session)
+# print(time.time()-start)
+# ---------------------end block 3------------------------
+
+# ПРИМЕР 3
+# *************
+# import aiohttp
+# import asyncio
+# import requests
+# from bs4 import BeautifulSoup
+
+# category_lst = []
+# pagen_lst = []
+# domain = 'https://parsinger.ru/html/'
+
+
+# def get_soup(url):
+#     resp = requests.get(url=url)
+#     return BeautifulSoup(resp.text, 'lxml')
+
+
+# def get_urls_categories(soup):
+#     all_link = soup.find('div', class_='nav_menu').find_all('a')
+
+#     for cat in all_link:
+#         category_lst.append(domain + cat['href'])
+
+
+# def get_urls_pages(category_lst):
+#     for cat in category_lst:
+#         resp = requests.get(url=cat)
+#         soup = BeautifulSoup(resp.text, 'lxml')
+#         for pagen in soup.find('div', class_='pagen').find_all('a'):
+#             pagen_lst.append(domain + pagen['href'])
+
+
+# async def get_data(session, link):
+#     async with session.get(url=link) as response:
+#         resp = await response.text()
+#         soup = BeautifulSoup(resp, 'lxml')
+#         item_card = [x['href'] for x in soup.find_all('a', class_='name_item')]
+#         for x in item_card:
+#             url2 = domain + x
+#             async with session.get(url=url2) as response2:
+#                 resp2 = await response2.text()
+#                 soup2 = BeautifulSoup(resp2, 'lxml')
+#                 article = soup2.find('p', class_='article').text
+#                 name = soup2.find('p', id='p_header').text
+#                 price = soup2.find('span', id='price').text
+#                 print(url2, price, article, name)
+
+
+# async def main():
+#     async with aiohttp.ClientSession() as session:
+#         tasks = []
+#         for link in pagen_lst:
+#             task = asyncio.create_task(get_data(session, link))
+#             tasks.append(task)
+#         await asyncio.gather(*tasks)
+
+
+# url = 'https://parsinger.ru/html/index1_page_1.html'
+# soup = get_soup(url)
+# get_urls_categories(soup)
+# get_urls_pages(category_lst)
+
+# asyncio.run(main())
+
+# ПРИМЕР 3 (ООП)
+# *************
+
+import aiohttp
+import asyncio
+import requests
+from bs4 import BeautifulSoup
+
+class Parser:
+    def __init__(self, domain) -> None:
+        self._domain = domain
+        self._category_lst, self._pagen_lst = [], []
+
+    @staticmethod
+    def get_soup(url):
+        resp = requests.get(url=url)
+        return BeautifulSoup(resp.text, 'lxml')
+
+    def get_urls_categories(self, soup)
