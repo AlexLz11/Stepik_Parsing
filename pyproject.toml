@@ -18,6 +18,7 @@ aiohttp = "^3.10.1"
 codetiming = "^1.4.0"
 aiofiles = "^24.1.0"
 aiohttp-socks = "^0.9.0"
+aiohttp-retry = "^2.8.3"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

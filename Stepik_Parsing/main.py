@@ -336,19 +336,98 @@
 # ПРИМЕР 3 (ООП)
 # *************
 
-import aiohttp
-import asyncio
-import requests
-from bs4 import BeautifulSoup
+# import aiohttp
+# import asyncio
+# import requests
+# from bs4 import BeautifulSoup
 
-class Parser:
-    def __init__(self, domain) -> None:
-        self._domain = domain
-        self._category_lst, self._pagen_lst = [], []
+# class Parser:
+#     def __init__(self, domain) -> None:
+#         self._domain = domain
+#         self._category_lst, self._pagen_lst = [], []
 
-    @staticmethod
-    def get_soup(url):
-        resp = requests.get(url=url)
-        return BeautifulSoup(resp.text, 'lxml')
+#     @staticmethod
+#     def get_soup(url):
+#         resp = requests.get(url=url)
+#         return BeautifulSoup(resp.text, 'lxml')
 
-    def get_urls_categories(self, soup)
+#     def get_urls_categories(self, soup):
+#         all_link = soup.find('div', class_='nav_menu').find_all('a')
+#         for cat in all_link:
+#             self._category_lst.append(self._domain + cat['href'])
+
+#     def get_urls_pages(self):
+#         for cat in self._category_lst:
+#             soup = self.get_soup(cat)
+#             for pagen in soup.find('div', class_='pagen').find_all('a'):
+#                 self._pagen_lst.append(self._domain + pagen['href'])
+
+#     async def get_data(self, session, link):
+#         async with session.get(url=link) as response:
+#             resp = await response.text()
+#             soup = BeautifulSoup(resp, 'lxml')
+#             item_card = [x['href'] for x in soup.find_all('a', class_='name_item')]
+#             for x in item_card:
+#                 url2 = self._domain + x
+#                 async with session.get(url=url2) as response2:
+#                     resp2 = await response2.text()
+#                     soup2 = BeautifulSoup(resp2, 'lxml')
+#                     article = soup2.find('p', class_='article').text
+#                     name = soup2.find('p', id='p_header').text
+#                     price = soup2.find('span', id='price').text
+#                     print(url2, price, article, name)
+
+#     async def main(self):
+#         async with aiohttp.ClientSession() as session:
+#             tasks = []
+#             for link in self._pagen_lst:
+#                 task = asyncio.create_task(self.get_data(session, link))
+#                 tasks.append(task)
+
+#             await asyncio.gather(*tasks)
+    
+#     def __call__(self, url, *args, **kwargs):
+#         soup = self.get_soup(url)
+#         self.get_urls_categories(soup)
+#         self.get_urls_pages()
+#         asyncio.run(self.main())
+
+# if __name__ == '__main__':
+#     parse_site = Parser(domain='https://parsinger.ru/html/')
+#     parse_site('https://parsinger.ru/html/index1_page_1.html')
+
+# import time
+# import asyncio
+# import aiohttp
+# from aiohttp_retry import RetryClient, ExponentialRetry
+
+# # Последние 2 ссылки — 404-е, добавлены в демонстрационных целях
+# links = ['https://parsinger.ru/html/watch/1/1_1.html',
+#          'https://parsinger.ru/html/watch/1/1_2.html',
+#          'https://parsinger.ru/html/watch/1/1_3.html',
+#          'https://parsinger.ru/html/watch/8/1_3.html',
+#          'https://parsinger.ru/html/watch/8/2_3.html']
+
+
+# # Корутина для вывода сообщения вида link:response.status
+# async def get_data(retry_client, link):
+#     async with retry_client.get(link) as response:
+#         print(f'{link}:{response.status}')
+
+
+# # Базовая корутина
+# async def main():
+#     async with aiohttp.ClientSession() as client_session:
+#         # statuses=[404] выбран для демонстрации, на практике
+#         # повторное обращение к несуществующей странице скорее всего бессмысленно
+#         retry_options = ExponentialRetry(attempts=4, statuses={404})
+#         async with RetryClient(
+#                 raise_for_status=False, retry_options=retry_options,
+#                 client_session=client_session) as retry_client:
+#             await asyncio.gather(*[get_data(retry_client, link) for link in links])
+
+
+# if __name__ == '__main__':
+#     start = time.time()
+#     asyncio.run(main())
+#     print(f'время:{time.time() - start}')
