@@ -431,3 +431,68 @@
 #     start = time.time()
 #     asyncio.run(main())
 #     print(f'время:{time.time() - start}')
+
+# 6.8.1 Приготовление асинхронного супа. Задача 1
+
+import asyncio
+import aiohttp
+import requests
+from bs4 import BeautifulSoup
+from aiohttp_retry import RetryClient, ExponentialRetry
+from fake_useragent import UserAgent
+from time import time
+
+def get_soup(url):
+    resp = requests.get(url)
+    resp.encoding = 'utf-8'
+    return BeautifulSoup(resp.text, 'lxml')
+
+def get_categories(soup):
+    links = soup.find('div', class_='nav_menu').select('a')
+    for link in links:
+        categories.append(domain + link['href'])
+
+def get_pages(cat_lst):
+    for cat in cat_lst:
+        soup = get_soup(cat)
+        links = soup.find('div', class_='pagen').select('a') # type: ignore
+        for link in links:
+            pages.append(domain + link['href']) # type: ignore
+
+async def get_data(session, link):
+    retry_opt = ExponentialRetry(attempts=5)
+    retry_client = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeouy=0.5)
+    async with retry_client.get(link) as responce:
+        soup = BeautifulSoup(await responce.text(), 'lxml')
+        cards = [domain + card['href'] for card in soup.select('a.name_item')] # type: ignore
+        discount_sum = 0
+        for card in cards:
+            async with retry_client.get(card) as response2:
+                soup = BeautifulSoup(await response2.text(), 'lxml')
+                qt = int(soup.find('span', id='in_stock').text.split()[-1]) # type: ignore
+                old_price = int(soup.find('span', id='old_price').text.split()[0]) # type: ignore
+                price = int(soup.find('span', id='price').text.split()[0]) # type: ignore
+                discount = (old_price - price) * qt
+                discount_sum += discount
+    return discount_sum
+
+async def main():
+    ua = UserAgent()
+    headers = {'user-agent': ua.random}
+    async with aiohttp.ClientSession(headers=headers) as session:
+        tasks = [asyncio.create_task(get_data(session, link)) for link in pages]
+        result = sum(await asyncio.gather(*tasks))
+    print('Общий размер скидки для всех товаров:', result)
+
+if __name__ == '__main__':
+    categories = []
+    pages = []
+    domain = 'https://parsinger.ru/html/'
+    url = 'https://parsinger.ru/html/index1_page_1.html'
+    soup = get_soup(url)
+    get_categories(soup)
+    get_pages(categories)
+
+    start_time = time()
+    asyncio.run(main())
+    print('Время выполнения:', time() - start_time)
