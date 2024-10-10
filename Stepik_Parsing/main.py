@@ -524,7 +524,7 @@
 
 # async def get_data(session, link):
 #     retry_opt = ExponentialRetry(attempts=5)
-#     retry_client = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeouy=0.5)
+#     retry_client = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeout=0.5)
 #     async with retry_client.get(link) as responce:
 #         soup = BeautifulSoup(await responce.text(), 'lxml')
 #         cards = [domain + card['href'] for card in soup.select('a.name_item')] # type: ignore
@@ -548,6 +548,7 @@
 #     print('Общий размер скидки для всех товаров:', result)
 
 # if __name__ == '__main__':
+#     start_time = time()
 #     categories = []
 #     pages = []
 #     domain = 'https://parsinger.ru/html/'
@@ -556,7 +557,6 @@
 #     get_categories(soup)
 #     get_pages(categories)
 
-#     start_time = time()
 #     asyncio.run(main())
 #     print('Время выполнения:', time() - start_time)
 
@@ -585,7 +585,7 @@
 
 # async def get_data(session, link):
 #     retry_opt = ExponentialRetry(attempts=5)
-#     rc_session = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeouy=0.5)
+#     rc_session = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeout=0.5)
 #     async with rc_session.get(link) as responce:
 #         soup = BeautifulSoup(await responce.text(), 'lxml')
 #         cards = [domain + card['href'] for card in soup.select('a.name_item')]
@@ -615,3 +615,66 @@
 #     start_time = time()
 #     asyncio.run(main())
 #     print('Время выполнения:', time() - start_time)
+
+# ***** АСИНХР 3
+
+import asyncio
+import aiohttp
+import requests
+from bs4 import BeautifulSoup
+from aiohttp_retry import RetryClient, ExponentialRetry
+from fake_useragent import UserAgent
+from time import time
+
+def get_categories(link):
+    resp = requests.get(link)
+    resp.encoding = 'utf-8'
+    soup = BeautifulSoup(resp.text, 'lxml')
+    categories = [domain + cat['href'] for cat in soup.find('div', class_='nav_menu').select('a')]
+    return categories
+
+async def get_soup(session, url):
+    async with session.get(url) as response:
+        resp = await response.text()
+        return BeautifulSoup(resp, 'lxml')
+
+async def get_pages_links(session, url):
+    soup = await get_soup(session, url)
+    pages = [domain + page['href'] for page in soup.find('div', class_='pagen').select('a')]
+    for page in pages:
+        pages_links.append(page)
+    return pages
+
+async def get_data(session, url):
+    soup = await get_soup(session, url)
+    cards = [domain + card['href'] for card in soup.select('a.name_item')]
+    discount_sum = 0
+    for card in cards:
+        soup = await get_soup(session, card)
+        qt = int(soup.find('span', id='in_stock').text.split()[-1])
+        old_price = int(soup.find('span', id='old_price').text.split()[0])
+        price = int(soup.find('span', id='price').text.split()[0])
+        discount = (old_price - price) * qt
+        discount_sum += discount
+    return discount_sum
+
+async def main():
+    ua = UserAgent()
+    headers = {'user-agent': ua.random}
+    async with aiohttp.ClientSession(headers=headers) as session:
+        retry_opt = ExponentialRetry(attempts=5)
+        rc_session = RetryClient(raise_for_status=False, retry_options=retry_opt, client_session=session, start_timeout=0.5)
+        tasks1 = [asyncio.create_task(get_pages_links(rc_session, cat)) for cat in categories_links]
+        sss = await asyncio.gather(*tasks1)
+        tasks2 = [asyncio.create_task(get_data(rc_session, page)) for page in pages_links]
+        result = sum(await asyncio.gather(*tasks2))
+        print('Общий размер скидки для всех товаров:', result)
+
+if __name__ == '__main__':
+    start_time = time()
+    url = 'https://parsinger.ru/html/index1_page_1.html'
+    domain = 'https://parsinger.ru/html/'
+    pages_links = []
+    categories_links = get_categories(url)
+    asyncio.run(main())
+    print('Время выполнения:', time() - start_time)
