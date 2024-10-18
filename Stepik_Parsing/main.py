@@ -1490,29 +1490,144 @@
 
 # 6.8 Приготовление асинхронного супа. Задача 2
 
+# import asyncio
+# import aiohttp
+# from bs4 import BeautifulSoup
+
+# async def get_response(session, link):
+#     async with session.get(link) as response:
+#         if response.ok:
+#             resp = await response.text()
+#             soup = BeautifulSoup(resp, 'lxml')
+#             return int(soup.find('p', class_='text').text)
+#         else:
+#             return 0
+
+# async def main():
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url) as response:
+#             resp = await response.text()
+#             soup = BeautifulSoup(resp, 'lxml')
+#             all_links = [domain + link['href'] for link in soup.select('a')]
+#             tasks = [asyncio.create_task(get_response(session, link)) for link in all_links]
+#             result = sum(await asyncio.gather(*tasks))
+#     print(result)
+
+# domain = 'https://parsinger.ru/asyncio/create_soup/1/'
+# url = 'https://parsinger.ru/asyncio/create_soup/1/index.html'
+# asyncio.run(main())
+
+# 6.9 aiofiles Скачивание картинок в асинхронном стиле
+# *****************************************************************
+
+# ПРИМЕР 1. Асинхронный (результат = 10.975 сек)
+
+# import time
+# import aiofiles
+# import asyncio
+# import aiohttp
+# from bs4 import BeautifulSoup
+# import os
+
+
+# async def write_file(session, url, name_img):
+#     async with aiofiles.open(f'Stepik_Parsing/images/{name_img}', mode='wb') as f:
+#         async with session.get(url) as response:
+#             async for x in response.content.iter_chunked(1024):
+#                 await f.write(x)
+#         print(f'Изображение сохранено {name_img}')
+
+
+# async def main():
+#     url = 'https://parsinger.ru/asyncio/aiofile/1/index.html'
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url) as response:
+#             soup = BeautifulSoup(await response.text(), 'lxml')
+#             img_url = [f'https://parsinger.ru/asyncio/aiofile/1/{x["src"]}' for x in soup.find_all('img')]
+#             tasks = []
+#             for link in img_url:
+#                 name_img = link.split('/')[7]
+#                 task = asyncio.create_task(write_file(session, link, name_img))
+#                 tasks.append(task)
+#             await asyncio.gather(*tasks)
+
+
+# start = time.perf_counter()
+# asyncio.run(main())
+# print(f'Cохранено изображений {len(os.listdir("Stepik_Parsing/images/"))} за {round(time.perf_counter() - start, 3)} сек')
+
+# ПРИМЕР 2. Синхронный (результат = 136.590 сек)
+
+# import time
+# import requests
+# from bs4 import BeautifulSoup
+
+
+# def main(url):
+#     img_url = []
+#     response = requests.get(url)
+#     soup = BeautifulSoup(response.text, 'lxml')
+#     images_link = [f'https://parsinger.ru/asyncio/aiofile/1/{x["src"]}' for x in soup.find_all('img')]
+#     img_url.extend(images_link)
+
+#     for x in images_link:
+#         response2 = requests.get(x, stream=True).content
+#         name_img = x.split('/')[7]
+#         read_file = open(f'Stepik_Parsing/images_sync/{name_img}.jpg', 'wb')
+#         read_file.write(response2)
+
+
+# start = time.perf_counter()
+# url = 'https://parsinger.ru/asyncio/aiofile/1/index.html'
+# main(url)
+# print(time.perf_counter() - start)
+
+# ******************************************************
+# 6.9.1 aiofiles Глубина парсинга уровень 1
+# ******************************************************
+import time
+import aiofiles
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
+import os
 
-async def get_response(session, link):
-    async with session.get(link) as response:
-        if response.ok:
-            resp = await response.text()
-            soup = BeautifulSoup(resp, 'lxml')
-            return int(soup.find('p', class_='text').text)
-        else:
-            return 0
+def get_folder_size(filepath, size=0):
+    for root, dirs, files in os.walk(filepath):
+        for f in files:
+            size += os.path.getsize(os.path.join(root, f))
+    return size
+
+async def get_img_links(session, url):
+    async with session.get(url) as response:
+        soup = BeautifulSoup(await response.text(), 'lxml')
+        img_links = [link['src'] for link in soup.find_all('img')]
+        all_links.update(img_links)
+
+async def get_img(session, url):
+    img_name = os.path.basename(url)
+    async with aiofiles.open(img_path + img_name, mode='wb') as file:
+        async with session.get(url) as response:
+            async for x in response.content.iter_chanked(1024):
+                await file.write(x)
 
 async def main():
+    domain = 'https://parsinger.ru/asyncio/aiofile/2/'
+    url = 'https://parsinger.ru/asyncio/aiofile/2/index.html'
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            resp = await response.text()
-            soup = BeautifulSoup(resp, 'lxml')
-            all_links = [domain + link['href'] for link in soup.select('a')]
-            tasks = [asyncio.create_task(get_response(session, link)) for link in all_links]
-            result = sum(await asyncio.gather(*tasks))
-    print(result)
+        response = session.get(url)
+        soup = BeautifulSoup(await response.text(), 'lxml')
+        page_links = [domain + page['href'] for page in soup.select('a')]
+        tasks1 = [asyncio.create_task(get_img_links(session, link)) for link in page_links]
+        await asyncio.gather(*tasks1)
+        tasks2 = [asyncio.create_task(get_img(session, link)) for link in all_links]
+        await asyncio.gather(*tasks2)
 
-domain = 'https://parsinger.ru/asyncio/create_soup/1/'
-url = 'https://parsinger.ru/asyncio/create_soup/1/index.html'
+img_path = 'Stepik_Parsing/images'
+all_links = set()
+start = time.perf_counter()
+os.makedirs(img_path, exist_ok=True)
 asyncio.run(main())
+size = get_folder_size(img_path)
+print('Размер скачанных изображений:', size)
+print('Время скачиывния:', time.perf_counter() - start, 'сек.')
