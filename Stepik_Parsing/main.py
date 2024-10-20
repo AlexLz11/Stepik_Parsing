@@ -1685,3 +1685,68 @@
 # size = get_folder_size(img_path)
 # print('Размер скачанных изображений:', size)
 # print('Время скачиывния:', time.perf_counter() - start, 'сек.')
+
+# ******************************************************
+# 6.9.2 aiofiles Глубина парсинга уровень 2
+# ООП style
+# ******************************************************
+import time
+import aiofiles
+import asyncio
+import aiohttp
+from bs4 import BeautifulSoup
+import os
+
+class AsyncParser:
+
+    def __init__(self, url) -> None:
+        self._url = url
+        self._img_path = 'Stepik_Parsing/images/'
+        self._domain = 'https://parsinger.ru/asyncio/aiofile/3/'
+        self._all_links = set()
+
+    @staticmethod
+    async def get_soup(session, url):
+        async with session.get(url) as response:
+            html = await response.text()
+            return BeautifulSoup(html, 'lxml')
+
+    async def get_img_links(self, session, url):
+        soup = await self.get_soup(session, url)
+        pages = [f"{self._domain}depth2/{page['href']}" for page in soup.select('a')]
+        for page in pages:
+            soup = await self.get_soup(session, page)
+            img_links = [link['src'] for link in soup.select('img')]
+            self._all_links.update(img_links)
+
+    async def get_image(self, session, url):
+        img_name = os.path.basename(url)
+        async with aiofiles.open(self._img_path + img_name, mode='wb') as file:
+            async with session.get(url) as response:
+                async for x in response.content.iter_chunked(1024):
+                    await file.write(x)
+
+    async def main(self):
+        async with aiohttp.ClientSession() as session:
+            soup = await self.get_soup(session, self._url)
+            page_links = [self._domain + page['href'] for page in soup.select('a')]
+            tasks1 = [asyncio.create_task(self.get_img_links(session, link)) for link in page_links]
+            await asyncio.gather(*tasks1)
+            tasks2 = [asyncio.create_task(self.get_image(session, link)) for link in self._all_links]
+            await asyncio.gather(*tasks2)
+
+    def get_folder_size(self, size=0):
+        for root, dirs, files in os.walk(self._img_path):
+            for f in files:
+                size += os.path.getsize(os.path.join(root, f))
+        return size
+    
+    def __call__(self, *args, **kwds):
+        os.makedirs(self._img_path, exist_ok=True)
+        asyncio.run(self.main())
+
+start = time.perf_counter()
+parser = AsyncParser('https://parsinger.ru/asyncio/aiofile/3/index.html')
+parser()
+print('Размер скачанных изображений:', parser.get_folder_size())
+print('Время скачиывния:', time.perf_counter() - start, 'сек.')
