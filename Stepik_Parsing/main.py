@@ -7,9 +7,14 @@
 # print(pyrogram.__version__)
 
 from pyrogram import Client
+import json
 
-api_id = 25779997
-api_hash = "93c2608907a0ed17a4fa0973bcc65ee3"
+with open('Stepik_Parsing/api_keys.json') as file:
+    api_keys = json.load(file)
+
+api_id = api_keys['api_id']
+api_hash = api_keys['api_hash']
+print(api_id, api_hash)
 group_url = "python_parsing"
 app = Client("my_session", api_id=api_id, api_hash=api_hash)
 
