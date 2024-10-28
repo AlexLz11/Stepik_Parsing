@@ -14,7 +14,6 @@ with open('Stepik_Parsing/api_keys.json') as file:
 
 api_id = api_keys['api_id']
 api_hash = api_keys['api_hash']
-print(api_id, api_hash)
 group_url = "python_parsing"
 app = Client("my_session", api_id=api_id, api_hash=api_hash)
 
