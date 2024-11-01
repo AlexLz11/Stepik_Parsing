@@ -1,0 +1,176 @@
+{
+    "_": "Chat",
+    "id": -1002023150114,
+    "type": "ChatType.SUPERGROUP",
+    "is_verified": false,
+    "is_restricted": false,
+    "is_creator": false,
+    "is_scam": false,
+    "is_fake": false,
+    "title": "Parsinger_pyrogram",
+    "username": "parsinger_pyrogram",
+    "photo": {
+        "_": "ChatPhoto",
+        "small_file_id": "AQADAgADi9kxGwJbUUoAEAIAA94dxLIW____Ge6argXa09EABB4E",
+        "small_photo_unique_id": "AgADi9kxGwJbUUo",
+        "big_file_id": "AQADAgADi9kxGwJbUUoAEAMAA94dxLIW____Ge6argXa09EABB4E",
+        "big_photo_unique_id": "AgADi9kxGwJbUUo"
+    },
+    "description": "ABCD-1234-EFGH-5678-IJKL\nMNOP-9012-QRST-3456-UVWX\nYZ01-2345-ABCD-6789-EFGH\nIJKL-0123-MNOP-4567-QRST\nUVWX-8901-YZAB-2345-CDEF\nXMPL-1234-YZAB-5678-WXYZ",
+    "dc_id": 2,
+    "has_protected_content": false,
+    "pinned_message": {
+        "_": "Message",
+        "id": 167,
+        "from_user": {
+            "_": "User",
+            "id": 332703068,
+            "is_self": false,
+            "is_contact": false,
+            "is_mutual_contact": false,
+            "is_deleted": false,
+            "is_bot": false,
+            "is_verified": false,
+            "is_restricted": false,
+            "is_scam": false,
+            "is_fake": false,
+            "is_support": false,
+            "is_premium": true,
+            "first_name": "Павел",
+            "last_name": "Хошев",
+            "status": "UserStatus.RECENTLY",
+            "username": "Pashikk",
+            "emoji_status": {
+                "_": "EmojiStatus",
+                "custom_emoji_id": 5379693009233257053
+            },
+            "dc_id": 2,
+            "photo": {
+                "_": "ChatPhoto",
+                "small_file_id": "AQADAgADs6cxG1yl1BMAEAIAA1yl1BMABP_rMlBsKnrRAAQeBA",
+                "small_photo_unique_id": "AgADs6cxG1yl1BM",
+                "big_file_id": "AQADAgADs6cxG1yl1BMAEAMAA1yl1BMABP_rMlBsKnrRAAQeBA",
+                "big_photo_unique_id": "AgADs6cxG1yl1BM"
+            }
+        },
+        "date": "2023-11-08 15:21:39",
+        "chat": {
+            "_": "Chat",
+            "id": -1002023150114,
+            "type": "ChatType.SUPERGROUP",
+            "is_verified": false,
+            "is_restricted": false,
+            "is_creator": false,
+            "is_scam": false,
+            "is_fake": false,
+            "title": "Parsinger_pyrogram",
+            "username": "parsinger_pyrogram",
+            "photo": {
+                "_": "ChatPhoto",
+                "small_file_id": "AQADAgADi9kxGwJbUUoAEAIAA94dxLIW____Ge6argXa09EABB4E",
+                "small_photo_unique_id": "AgADi9kxGwJbUUo",
+                "big_file_id": "AQADAgADi9kxGwJbUUoAEAMAA94dxLIW____Ge6argXa09EABB4E",
+                "big_photo_unique_id": "AgADi9kxGwJbUUo"
+            },
+            "dc_id": 2,
+            "has_protected_content": false,
+            "permissions": {
+                "_": "ChatPermissions",
+                "can_send_messages": false,
+                "can_send_media_messages": false,
+                "can_send_other_messages": false,
+                "can_send_polls": false,
+                "can_add_web_page_previews": false,
+                "can_change_info": false,
+                "can_invite_users": false,
+                "can_pin_messages": false
+            }
+        },
+        "mentioned": false,
+        "scheduled": false,
+        "from_scheduled": false,
+        "edit_date": "2023-11-09 12:44:13",
+        "has_protected_content": false,
+        "text": "WEB Парсинг на Python \nАсинхронный Python",
+        "entities": [
+            {
+                "_": "MessageEntity",
+                "type": "MessageEntityType.TEXT_LINK",
+                "offset": 0,
+                "length": 21,
+                "url": "https://stepik.org/a/104774/"
+            },
+            {
+                "_": "MessageEntity",
+                "type": "MessageEntityType.TEXT_LINK",
+                "offset": 23,
+                "length": 18,
+                "url": "https://stepik.org/a/170777/"
+            }
+        ],
+        "outgoing": false,
+        "reactions": {
+            "_": "MessageReactions",
+            "reactions": [
+                {
+                    "_": "Reaction",
+                    "emoji": "❤",
+                    "count": 4
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "✍",
+                    "count": 2
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "🔥",
+                    "count": 2
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "👏",
+                    "count": 2
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "👍",
+                    "count": 1
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "😁",
+                    "count": 1
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "🎉",
+                    "count": 1
+                },
+                {
+                    "_": "Reaction",
+                    "emoji": "💯",
+                    "count": 1
+                }
+            ]
+        }
+    },
+    "can_set_sticker_set": false,
+    "members_count": 17,
+    "permissions": {
+        "_": "ChatPermissions",
+        "can_send_messages": false,
+        "can_send_media_messages": false,
+        "can_send_other_messages": false,
+        "can_send_polls": false,
+        "can_add_web_page_previews": false,
+        "can_change_info": false,
+        "can_invite_users": false,
+        "can_pin_messages": false
+    },
+    "available_reactions": {
+        "_": "ChatReactions",
+        "all_are_enabled": true,
+        "allow_custom_emoji": true
+    }
+}
