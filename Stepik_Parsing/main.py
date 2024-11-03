@@ -295,6 +295,27 @@
 
 # 7.3.4. Охота за сокровищами в цифровых глубинах
 
+# from pyrogram import Client
+# import json
+
+# with open('Stepik_Parsing/api_keys.json') as file:
+#     api_keys = json.load(file)
+
+# api_id = api_keys['api_id']
+# api_hash = api_keys['api_hash']
+# group_url = "parsinger_pyrogram"
+
+# def main():
+#     app = Client('my_session', api_id=api_id, api_hash=api_hash)
+#     with app:
+#         chat = app.get_chat(group_url)
+#         description = chat.description
+#         jem = ''.join([x for x in description if x.isdigit() and int(x)>0 and int(x)%2 == 0])
+#         print(jem)
+
+# main()
+
+# 7.3.5. Сборщик идентификаторов
 from pyrogram import Client
 import json
 
@@ -308,9 +329,8 @@ group_url = "parsinger_pyrogram"
 def main():
     app = Client('my_session', api_id=api_id, api_hash=api_hash)
     with app:
-        chat = app.get_chat(group_url)
-        description = chat.description
-        jem = ''.join([x for x in description if x.isdigit() and int(x)>0 and int(x)%2 == 0])
-        print(jem)
+        members_ids = [member.user.id for member in app.get_chat_members(group_url)]
+        print(sum(members_ids))
 
-main()
+if __name__ == '__main__':
+    main()
