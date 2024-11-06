@@ -316,6 +316,50 @@
 # main()
 
 # 7.3.5. Сборщик идентификаторов
+# from pyrogram import Client
+# import json
+
+# with open('Stepik_Parsing/api_keys.json') as file:
+#     api_keys = json.load(file)
+
+# api_id = api_keys['api_id']
+# api_hash = api_keys['api_hash']
+# group_url = "parsinger_pyrogram"
+
+# def main():
+#     app = Client('my_session', api_id=api_id, api_hash=api_hash)
+#     with app:
+#         members_ids = [member.user.id for member in app.get_chat_members(group_url)]
+#         print(sum(members_ids))
+
+# if __name__ == '__main__':
+#     main()
+
+# *** 7.4. Парсинг сообщений из группы/чата ***
+# *********************************************
+
+# 7.4.1. Магистраль Знаний
+# from pyrogram import Client
+# import json
+
+# with open('Stepik_Parsing/api_keys.json') as file:
+#     api_keys = json.load(file)
+
+# api_id = api_keys['api_id']
+# api_hash = api_keys['api_hash']
+# group_url = "parsinger_pyrogram"
+
+# def main():
+#     app = Client('my_session', api_id=api_id, api_hash=api_hash)
+#     with app:
+#         messages = app.get_chat_history(group_url)
+#         chat_nums = [int(message.text) for message in messages if message.text and message.text.isdigit()]
+#         print(sum(chat_nums))
+        
+# if __name__ == '__main__':
+#     main()
+
+# 7.4.2. Арифметика цифрового мира
 from pyrogram import Client
 import json
 
@@ -329,8 +373,12 @@ group_url = "parsinger_pyrogram"
 def main():
     app = Client('my_session', api_id=api_id, api_hash=api_hash)
     with app:
-        members_ids = [member.user.id for member in app.get_chat_members(group_url)]
-        print(sum(members_ids))
-
+        total = 0
+        for message in app.get_chat_history(group_url):
+            if (num := message.text) and num.isdigit():
+                mult = int(num) * message.id
+                total += mult
+        print(total)
+        
 if __name__ == '__main__':
     main()
